@@ -1,0 +1,96 @@
+{
+  "sidebar": {
+    "home": "Home",
+    "library": "Library",
+    "create_instance": "Create instance",
+    "settings": "Settings"
+  },
+  "settings": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "language": "Language"
+  },
+  "language": {
+    "en_native": "English (United States)",
+    "en_translated": "English (United States)",
+    "pl_native": "Polski",
+    "pl_translated": "Polish"
+  },
+  "appearance": {
+    "title": "Color theme",
+    "subtitle": "Select your preferred color theme for Visual Client.",
+    "dark": "Dark"
+  },
+  "home": {
+    "welcome": "Welcome to Visual Client!",
+    "discover_shaders": "Discover shaders",
+    "discover_mods": "Discover mods",
+    "discover_modpacks": "Discover a modpack"
+  },
+  "instance_settings": {
+    "title": "Settings",
+    "general": "General",
+    "java": "Java",
+    "name": "Name",
+    "java_path": "Java Path",
+    "java_path_desc": "The exact path to the Java executable for this instance.",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "delete_title": "Delete Instance",
+    "delete_desc": "Permanently delete this instance and all its files. This action cannot be undone.",
+    "delete_btn": "Delete instance"
+  },
+  "library": {
+    "empty": "No instances found",
+    "create": "Create new instance",
+    "delete_confirm_title": "Delete confirmation",
+    "delete_confirm_text": "Are you sure you want to delete instance '{name}'? This action cannot be undone.",
+    "delete_btn": "Delete",
+    "cancel_btn": "Cancel"
+  },
+  "create_instance": {
+    "title": "Create new instance",
+    "name": "Name",
+    "loader": "Loader",
+    "version": "Version",
+    "no_versions": "Loading versions...",
+    "no_versions_found": "No versions found",
+    "back": "Back",
+    "create": "Create"
+  },
+  "instance": {
+    "play": "Play",
+    "launching": "Launching...",
+    "login_required": "You must log in before playing!",
+    "login_modal_title": "Sign in to Minecraft",
+    "login_modal_text": "To play this instance, you must select account.",
+    "login_modal_btn": "Select account"
+  },
+  "accounts": {
+    "title": "Accounts",
+    "placeholder": "Enter nickname...",
+    "add": "Add Account",
+    "add_account": "Add account",
+    "choose_type": "Choose type",
+    "offline": "Offline",
+    "offline_desc": "Play without an internet connection",
+    "microsoft": "Microsoft",
+    "microsoft_desc": "Login with your Microsoft account",
+    "added_offline": "Successfully added account (Offline): {name}",
+    "added_microsoft": "Successfully added account (Microsoft): {name}",
+    "waiting_for_login": "Waiting for login...",
+    "nickname_label": "Nickname",
+    "nickname_hint": "3-16 characters. Letters, numbers, and underscores only.",
+    "active": "Active",
+    "empty": "No accounts found. Create one above!",
+    "delete_confirm_title": "Delete confirmation",
+    "delete_confirm_text": "Are you sure you want to delete account '{name}'?",
+    "delete_btn": "Delete",
+    "cancel_btn": "Cancel"
+  },
+  "updater": {
+    "checking": "Checking for updates...",
+    "downloading": "Downloading update...",
+    "restarting": "Restarting..."
+  }
+}
