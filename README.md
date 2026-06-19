@@ -91,11 +91,6 @@ VisualClient/
 └── vite.config.ts          # Vite build configuration
 ```
 
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! 
-Feel free to check [issues page](https://github.com/kaqvu/VisualClient/issues).
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
