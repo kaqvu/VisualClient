@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { checkForUpdates } from '../../composables/useUpdater';
+import { t } from '../../composables/useI18n';
 
 const appWindow = getCurrentWindow();
 
@@ -61,7 +62,7 @@ const startDrag = (e: MouseEvent) => {
     </div>
     
     <div class="titlebar-controls">
-      <div class="window-control update-control" @click="handleUpdateCheck" data-tooltip="Check for updates">
+      <div class="window-control update-control" @click="handleUpdateCheck" :data-tooltip="t('updater.check_tooltip')">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;">
           <path d="M4 12V10a4 4 0 0 1 4-4h12"></path>
           <polyline points="16 2 20 6 16 10"></polyline>

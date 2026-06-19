@@ -54,12 +54,19 @@ async fn download_java(version: u32, target_dir: &PathBuf, app: &AppHandle) -> R
     let extract_dir = target_dir.join(format!("jdk{}", version));
     if extract_dir.exists() {
         if let Ok(exe_path) = find_java_executable(&extract_dir) {
-            if let Ok(output) = std::process::Command::new(&exe_path)
-                .env_remove("JAVA_HOME")
+            let mut cmd = std::process::Command::new(&exe_path);
+            cmd.env_remove("JAVA_HOME")
                 .env_remove("PATH")
                 .env_remove("Path")
-                .arg("-version")
-                .output() {
+                .arg("-version");
+                
+            #[cfg(target_os = "windows")]
+            {
+                use std::os::windows::process::CommandExt;
+                cmd.creation_flags(0x08000000);
+            }
+
+            if let Ok(output) = cmd.output() {
                 
                 let output_str = String::from_utf8_lossy(&output.stderr);
                 if output.status.success() && output_str.contains("version") {

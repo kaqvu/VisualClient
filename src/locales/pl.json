@@ -91,6 +91,8 @@
   "updater": {
     "checking": "Sprawdzanie aktualizacji...",
     "downloading": "Pobieranie aktualizacji...",
-    "restarting": "Ponowne uruchamianie..."
+    "restarting": "Ponowne uruchamianie...",
+    "check_tooltip": "Sprawdź aktualizacje",
+    "latest_version": "Posiadasz najnowszą wersję!"
   }
 }

@@ -3,6 +3,7 @@ import { exit } from '@tauri-apps/plugin-process';
 import { emit } from '@tauri-apps/api/event';
 
 import { ref } from 'vue';
+import { t } from './useI18n';
 
 let isChecking = false;
 
@@ -63,7 +64,7 @@ export async function checkForUpdates(manual = false) {
     } else {
       updateState.value = 'idle';
       if (manual) {
-        emit('show_toast', { message: 'You have the latest version!' });
+        emit('show_toast', { message: t('updater.latest_version') });
       }
     }
   } catch (error: any) {

@@ -91,6 +91,8 @@
   "updater": {
     "checking": "Checking for updates...",
     "downloading": "Downloading update...",
-    "restarting": "Restarting..."
+    "restarting": "Restarting...",
+    "check_tooltip": "Check for updates",
+    "latest_version": "You have the latest version!"
   }
 }

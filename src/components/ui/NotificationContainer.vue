@@ -5,10 +5,28 @@ import { listen, UnlistenFn } from '@tauri-apps/api/event';
 const genericToast = ref<string | null>(null);
 const toastId = ref(0);
 
+const downloadTask = ref<string | null>(null);
+const downloadProgress = ref<number>(0);
+
 let unlistenToast: UnlistenFn | null = null;
+let unlistenProgress: UnlistenFn | null = null;
 let toastTimeout: any = null;
+let progressTimeout: any = null;
 
 onMounted(async () => {
+  unlistenProgress = await listen<{task: string, progress: number}>('download_progress', (event) => {
+    downloadTask.value = event.payload.task;
+    downloadProgress.value = event.payload.progress;
+    
+    if (progressTimeout) clearTimeout(progressTimeout);
+    
+    if (event.payload.progress >= 100 || event.payload.task.toLowerCase() === 'done') {
+      progressTimeout = setTimeout(() => {
+        downloadTask.value = null;
+      }, 2000);
+    }
+  });
+
   unlistenToast = await listen<{message: string}>('show_toast', (event) => {
     genericToast.value = event.payload.message;
     toastId.value++;
@@ -23,12 +41,25 @@ onMounted(async () => {
 
 onUnmounted(() => {
   if (unlistenToast) unlistenToast();
+  if (unlistenProgress) unlistenProgress();
   if (toastTimeout) clearTimeout(toastTimeout);
+  if (progressTimeout) clearTimeout(progressTimeout);
 });
 </script>
 
 <template>
   <div class="notifications-wrapper">
+    <Transition name="toast">
+      <div v-if="downloadTask" class="notification-toast">
+        <div class="toast-header">
+          <span class="task-name">{{ downloadTask }}</span>
+          <span class="task-pct" v-if="downloadProgress < 100">{{ downloadProgress }}%</span>
+        </div>
+        <div class="progress-bar-bg" v-if="downloadProgress < 100">
+          <div class="progress-bar-fill" :style="{ width: downloadProgress + '%' }"></div>
+        </div>
+      </div>
+    </Transition>
     <Transition name="toast">
       <div v-if="genericToast" :key="'toast-' + toastId" class="notification-toast simple-toast">
         <div class="toast-header">
