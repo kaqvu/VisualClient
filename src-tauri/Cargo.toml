@@ -1,0 +1,38 @@
+[package]
+name = "visualclient"
+version = "26.2.0"
+description = "A visual client for Minecraft"
+authors = ["kaqvu"]
+edition = "2024"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "visualclient_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+dirs = "6.0.0"
+tokio = { version = "1.52.3", features = ["time", "fs", "io-util"] }
+reqwest = { version = "0.11", features = ["stream", "json"] }
+futures-util = "0.3"
+zip = "0.6"
+tar = "0.4"
+flate2 = "1.0"
+walkdir = "2.3"
+tauri-plugin-dialog = "2.7.1"
+minecraft-msa-auth = "0.4.0"
+url = "2.5.8"
+magic-crypt = "4.0.1"
+tauri-plugin-updater = "2.10.1"
+tauri-plugin-process = "2.3.1"

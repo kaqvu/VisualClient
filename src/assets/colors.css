@@ -1,0 +1,36 @@
+:root {
+  --bg-shell: #27292e;
+  --bg-content: #16181c;
+  --border-line: #42444a;
+  --text-main: #f0f0f0;
+  --text-muted: #9ca3af;
+  --accent: #1ad96a;
+  --accent-hover: #16b859;
+  --surface-1: rgba(255, 255, 255, 0.03);
+  --surface-hover: rgba(255, 255, 255, 0.06);
+  --surface-active: rgba(255, 255, 255, 0.09);
+  
+  /* Additional Surfaces */
+  --surface-2: #35363c;
+  --surface-3: #2a2b30;
+  --surface-dark: #1f2125;
+  --surface-darker: #191b1f;
+
+  /* Text & Basic Colors */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --text-secondary: #b0bac4;
+
+  /* Danger / Error Colors */
+  --danger: #ed4245;
+  --danger-hover: #ff5a79;
+  --danger-active: #e54c69;
+
+  /* Overlays & Backdrops */
+  --backdrop-dark: rgba(0, 0, 0, 0.4);
+  --overlay-light: rgba(0, 0, 0, 0.1);
+  --overlay-medium: rgba(0, 0, 0, 0.2);
+
+}
+
+
