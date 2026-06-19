@@ -434,6 +434,22 @@ pub async fn launch_instance(
     
     cmd.arg(&launch_info.main_class);
 
+    let accounts = crate::accounts::get_accounts().unwrap_or_default();
+    let account = accounts.into_iter().find(|a| a.username == username).unwrap_or_else(|| {
+        crate::accounts::Account {
+            username: username.clone(),
+            active: true,
+            account_type: Some("Offline".to_string()),
+            uuid: None,
+            mc_token: None,
+            refresh_token: None,
+        }
+    });
+
+    let uuid_str = account.uuid.unwrap_or_else(|| "00000000-0000-0000-0000-000000000000".to_string());
+    let token_str = account.mc_token.unwrap_or_else(|| "0".to_string());
+    let user_type_str = if account.account_type.as_deref() == Some("Microsoft") { "msa" } else { "legacy" };
+
     let mut has_username = false;
     for arg in launch_info.game_args {
         if arg.contains("--username") || arg.contains("${auth_player_name}") {
@@ -444,9 +460,9 @@ pub async fn launch_instance(
            .replace("${game_directory}", &profiles_dir.to_string_lossy())
            .replace("${assets_root}", &mc_dir.join("assets").to_string_lossy())
            .replace("${assets_index_name}", &launch_info.asset_index)
-           .replace("${auth_uuid}", "00000000-0000-0000-0000-000000000000")
-           .replace("${auth_access_token}", "0")
-           .replace("${user_type}", "msa")
+           .replace("${auth_uuid}", &uuid_str)
+           .replace("${auth_access_token}", &token_str)
+           .replace("${user_type}", user_type_str)
            .replace("${version_type}", "release");
         cmd.arg(arg);
     }
@@ -457,9 +473,9 @@ pub async fn launch_instance(
         cmd.arg("--gameDir").arg(&profiles_dir);
         cmd.arg("--assetsDir").arg(mc_dir.join("assets"));
         cmd.arg("--assetIndex").arg(&launch_info.asset_index);
-        cmd.arg("--uuid").arg("00000000-0000-0000-0000-000000000000");
-        cmd.arg("--accessToken").arg("0");
-        cmd.arg("--userType").arg("msa");
+        cmd.arg("--uuid").arg(&uuid_str);
+        cmd.arg("--accessToken").arg(&token_str);
+        cmd.arg("--userType").arg(user_type_str);
         cmd.arg("--versionType").arg("release");
     }
 
