@@ -20,7 +20,7 @@ struct ProgressPayload {
     progress: u8,
 }
 
-fn get_dot_visualclient_dir() -> PathBuf {
+pub fn get_dot_visualclient_dir() -> PathBuf {
     #[cfg(target_os = "windows")]
     {
         dirs::config_dir().unwrap_or_else(|| dirs::home_dir().unwrap().join("AppData").join("Roaming")).join(".visualclient")

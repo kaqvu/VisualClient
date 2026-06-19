@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { invoke } from '@tauri-apps/api/core';
 import { t } from '../composables/useI18n';
 import { useInstances, Instance } from '../composables/useInstances';
@@ -24,6 +24,45 @@ const instance = computed(() => {
 });
 
 const activeTab = ref(0);
+const servers = ref<{name: string, ip: string, motdHtml?: string, loadingMotd?: boolean, online?: boolean}[]>([]);
+const worlds = ref<{folder_name: string, name: string, last_played: number}[]>([]);
+
+const loadData = async () => {
+  if (instance.value) {
+    try {
+      const fetchedServers: any[] = await invoke('get_instance_servers', { id: instance.value.id });
+      servers.value = fetchedServers.map(s => ({
+        ...s,
+        motdHtml: '',
+        loadingMotd: true,
+        online: false
+      }));
+      
+      servers.value.forEach(async (server, index) => {
+        try {
+          const res = await fetch(`https://api.mcsrvstat.us/3/${encodeURIComponent(server.ip)}`);
+          const data = await res.json();
+          if (data.online) {
+            servers.value[index].motdHtml = data.motd.html.join('<br>');
+            servers.value[index].online = true;
+          } else {
+            servers.value[index].motdHtml = '<span style="color: var(--error);">Server is offline</span>';
+          }
+        } catch(e) {
+          servers.value[index].motdHtml = '<span style="color: var(--error);">Failed to ping server</span>';
+        }
+        servers.value[index].loadingMotd = false;
+      });
+
+      worlds.value = await invoke('get_instance_worlds', { id: instance.value.id });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+};
+
+onMounted(loadData);
+watch(() => props.instanceId, loadData);
 
 const showLoginModal = ref(false);
 
@@ -102,7 +141,7 @@ const openFolder = async () => {
           <line x1="6" y1="6" x2="6.01" y2="6"></line>
           <line x1="6" y1="18" x2="6.01" y2="18"></line>
         </svg>
-        <span>Servers</span>
+        <span>{{ t('instance.servers') }}</span>
       </div>
 
       <div 
@@ -110,12 +149,49 @@ const openFolder = async () => {
         :class="{ active: activeTab === 1 }"
         @click="activeTab = 1"
       >
-        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="2" y1="12" x2="22" y2="12"></line>
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M6.15407 7.30116C7.52877 5.59304 9.63674 4.5 12 4.5C12.365 4.5 12.7238 4.52607 13.0748 4.57644L13.7126 5.85192L11.2716 8.2929L8.6466 8.6679L7.36009 9.95441L6.15407 7.30116ZM5.2011 8.82954C4.75126 9.79256 4.5 10.8669 4.5 12C4.5 15.6945 7.17133 18.7651 10.6878 19.3856L11.0989 18.7195L8.8147 15.547L10.3741 13.5256L9.63268 13.1549L6.94027 13.6036L6.41366 11.4972L5.2011 8.82954ZM7.95559 11.4802L8.05962 11.8964L9.86722 11.5951L11.3726 12.3478L14.0824 11.9714L18.9544 14.8135C19.3063 13.9447 19.5 12.995 19.5 12C19.5 8.93729 17.6642 6.30336 15.033 5.13856L15.5377 6.1481L11.9787 9.70711L9.35371 10.0821L7.95559 11.4802ZM18.2539 16.1414C16.9774 18.0652 14.8369 19.366 12.3859 19.4902L12.9011 18.6555L10.6853 15.578L12.0853 13.7632L13.7748 13.5286L18.2539 16.1414ZM12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3Z" fill="currentColor"/>
         </svg>
-        <span>Worlds</span>
+        <span>{{ t('instance.worlds') }}</span>
+      </div>
+    </div>
+
+    <div class="tab-content">
+      <div v-if="activeTab === 0 && servers.length === 0" class="empty-message">{{ t('instance.no_servers') }}</div>
+      <div v-else-if="activeTab === 0" class="servers-list">
+        <div class="server-card" v-for="server in servers" :key="server.ip">
+          <div class="item-icon server-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+              <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+              <line x1="6" y1="6" x2="6.01" y2="6"></line>
+              <line x1="6" y1="18" x2="6.01" y2="18"></line>
+            </svg>
+          </div>
+          <div class="server-card-content">
+            <div class="server-info">
+              <h4 class="item-name">{{ server.name }}</h4>
+              <div class="server-motd" v-if="server.loadingMotd">Pinging...</div>
+              <div class="server-motd" v-else v-html="server.motdHtml"></div>
+            </div>
+            <div class="server-ip">{{ server.ip }}</div>
+          </div>
+        </div>
+      </div>
+      
+      <div v-if="activeTab === 1 && worlds.length === 0" class="empty-message">{{ t('instance.no_worlds') }}</div>
+      <div v-else-if="activeTab === 1" class="worlds-list">
+        <div class="item-card" v-for="world in worlds" :key="world.folder_name">
+          <div class="item-icon world-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M6.15407 7.30116C7.52877 5.59304 9.63674 4.5 12 4.5C12.365 4.5 12.7238 4.52607 13.0748 4.57644L13.7126 5.85192L11.2716 8.2929L8.6466 8.6679L7.36009 9.95441L6.15407 7.30116ZM5.2011 8.82954C4.75126 9.79256 4.5 10.8669 4.5 12C4.5 15.6945 7.17133 18.7651 10.6878 19.3856L11.0989 18.7195L8.8147 15.547L10.3741 13.5256L9.63268 13.1549L6.94027 13.6036L6.41366 11.4972L5.2011 8.82954ZM7.95559 11.4802L8.05962 11.8964L9.86722 11.5951L11.3726 12.3478L14.0824 11.9714L18.9544 14.8135C19.3063 13.9447 19.5 12.995 19.5 12C19.5 8.93729 17.6642 6.30336 15.033 5.13856L15.5377 6.1481L11.9787 9.70711L9.35371 10.0821L7.95559 11.4802ZM18.2539 16.1414C16.9774 18.0652 14.8369 19.366 12.3859 19.4902L12.9011 18.6555L10.6853 15.578L12.0853 13.7632L13.7748 13.5286L18.2539 16.1414ZM12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3Z" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="item-info">
+            <h4 class="item-name">{{ world.name || world.folder_name }}</h4>
+            <span class="item-sub">{{ world.last_played > 0 ? new Date(world.last_played).toLocaleString() : world.folder_name }}</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -318,5 +394,135 @@ const openFolder = async () => {
 
 .btn-settings:active {
   transform: scale(0.85);
+}
+
+.tab-content {
+  margin-top: 24px;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.worlds-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  align-content: start;
+  flex: 1;
+}
+
+.servers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.item-card, .server-card {
+  background-color: var(--bg-shell);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  cursor: default;
+}
+
+.item-card:hover, .server-card:hover {
+  background-color: var(--surface-dark);
+}
+
+.server-card-content {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.server-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.server-motd {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  white-space: pre-wrap;
+  line-height: 1.4;
+}
+
+.server-ip {
+  font-size: 0.9rem;
+  color: var(--text-main);
+  background-color: var(--surface-2);
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-family: monospace;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.item-icon {
+  width: 48px;
+  height: 48px;
+  background-color: var(--surface-2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.server-icon {
+  color: #55ff55;
+  background-color: color-mix(in srgb, #55ff55 10%, transparent);
+}
+
+.world-icon {
+  color: #55ffff;
+  background-color: color-mix(in srgb, #55ffff 10%, transparent);
+}
+
+.item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.item-name {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.empty-message {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 1.1rem;
 }
 </style>

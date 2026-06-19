@@ -60,7 +60,11 @@
   },
   "instance": {
     "play": "Play",
-    "launching": "Launching...",
+    "launching": "Starting Minecraft...",
+    "servers": "Servers",
+    "worlds": "Worlds",
+    "no_servers": "No servers added",
+    "no_worlds": "No worlds added",
     "login_required": "You must log in before playing!",
     "login_modal_title": "Sign in to Minecraft",
     "login_modal_text": "To play this instance, you must select account.",

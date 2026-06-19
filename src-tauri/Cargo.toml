@@ -1,6 +1,6 @@
 [package]
 name = "visualclient"
-version = "26.2.0"
+version = "26.2.1"
 description = "A visual client for Minecraft"
 authors = ["kaqvu"]
 edition = "2024"
@@ -36,3 +36,4 @@ url = "2.5.8"
 magic-crypt = "4.0.1"
 tauri-plugin-updater = "2.10.1"
 tauri-plugin-process = "2.3.1"
+fastnbt = "2.6.1"

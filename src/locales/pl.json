@@ -61,6 +61,10 @@
   "instance": {
     "play": "Graj",
     "launching": "Uruchamianie...",
+    "servers": "Serwery",
+    "worlds": "Światy",
+    "no_servers": "Brak dodanych serwerów",
+    "no_worlds": "Brak dodanych światów",
     "login_required": "Musisz się zalogować, by zagrać!",
     "login_modal_title": "Zaloguj się do Minecraft",
     "login_modal_text": "Aby zagrać na tej instancji, musisz wybrać konto.",

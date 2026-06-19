@@ -4,6 +4,7 @@ mod accounts;
 mod minecraft;
 mod auth;
 mod crypto;
+mod instances_data;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -28,7 +29,9 @@ pub fn run() {
             accounts::select_account,
             accounts::delete_account,
             auth::start_microsoft_login,
-            auth::cancel_microsoft_login
+            auth::cancel_microsoft_login,
+            instances_data::get_instance_servers,
+            instances_data::get_instance_worlds
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
