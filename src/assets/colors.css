@@ -26,11 +26,11 @@
   --danger-hover: #ff5a79;
   --danger-active: #e54c69;
 
+  --mc-green: #55ff55;
+  --mc-aqua: #55ffff;
+
 
   --backdrop-dark: rgba(0, 0, 0, 0.4);
   --overlay-light: rgba(0, 0, 0, 0.1);
   --overlay-medium: rgba(0, 0, 0, 0.2);
-
 }
-
-

@@ -17,6 +17,12 @@ watch(() => props.editServerForm, (newVal) => {
   localForm.value = { ...newVal };
 }, { deep: true });
 
+watch(() => props.isOpen, (newVal) => {
+  if (newVal) {
+    isRpSelectOpen.value = false;
+  }
+});
+
 const save = () => {
   emit('update:editServerForm', localForm.value);
   emit('save');
@@ -47,12 +53,12 @@ const setResourcePack = (val: number | null) => {
         </div>
         
         <div class="form-group">
-          <label>{{ t('instance.server_ip') || 'Address' }}</label>
+          <label>{{ t('instance.server_address') || 'Address' }}</label>
           <input type="text" v-model="localForm.ip" class="input-field" placeholder="example.visualclient.com.pl" />
         </div>
         
         <div class="form-group">
-          <label>{{ t('instance.resource_packs') || 'Resource Packs' }}</label>
+          <label>{{ t('instance.server_resource_packs') || 'Resource Packs' }}</label>
           <div class="custom-dropdown" @click="isRpSelectOpen = !isRpSelectOpen">
             <div class="custom-dropdown-value">
               {{ localForm.acceptTextures === 1 ? t('instance.rp_enabled') || 'Enabled' : localForm.acceptTextures === 0 ? t('instance.rp_disabled') || 'Disabled' : t('instance.rp_prompt') || 'Prompt' }}
@@ -78,12 +84,10 @@ const setResourcePack = (val: number | null) => {
         </div>
         
         <div class="modal-actions">
-          <button class="btn btn-secondary" @click="emit('close')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <button class="modal-btn" @click="emit('close')">
             {{ t('instance.cancel') }}
           </button>
-          <button class="btn btn-success" @click="save">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          <button class="modal-btn primary" @click="save">
             {{ isAddingServer ? t('instance.add_server') : t('instance.save') }}
           </button>
         </div>
@@ -114,7 +118,7 @@ const setResourcePack = (val: number | null) => {
   border: 1px solid var(--border-line);
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 40px color-mix(in srgb, var(--color-black) 50%, transparent);
   padding: 24px;
   gap: 20px;
 }
@@ -168,15 +172,15 @@ const setResourcePack = (val: number | null) => {
 
 .input-field {
   width: 100%;
-  height: 38px;
-  background-color: var(--surface-2);
-  border: 1px solid transparent;
+  height: 44px;
+  background-color: var(--surface-1);
+  border: none;
   border-radius: 12px;
   padding: 0 16px;
   color: var(--text-main);
   font-family: inherit;
   font-size: 1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   outline: none;
 }
 
@@ -186,17 +190,16 @@ const setResourcePack = (val: number | null) => {
 }
 
 .input-field:focus {
-  background-color: var(--surface-2);
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent);
+  background-color: var(--surface-hover);
+  box-shadow: 0 0 0 4px var(--accent);
 }
 
 .custom-dropdown {
   position: relative;
   width: 100%;
-  height: 38px;
-  background-color: var(--surface-2);
-  border: 1px solid transparent;
+  height: 44px;
+  background-color: var(--surface-1);
+  border: none;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -205,16 +208,15 @@ const setResourcePack = (val: number | null) => {
   cursor: pointer;
   color: var(--text-main);
   font-size: 1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .custom-dropdown:hover {
   background-color: var(--surface-hover);
 }
 
-.custom-dropdown:focus, .custom-dropdown:active {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent);
+.custom-dropdown:focus, .custom-dropdown:active, .custom-dropdown.active {
+  background-color: var(--surface-hover);
 }
 
 .custom-dropdown-value {
@@ -240,7 +242,7 @@ const setResourcePack = (val: number | null) => {
   background-color: var(--surface-3);
   border: 1px solid var(--border-line);
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-black) 40%, transparent);
   z-index: 100;
   display: flex;
   flex-direction: column;
@@ -272,12 +274,12 @@ const setResourcePack = (val: number | null) => {
 
 .custom-dropdown-item.selected {
   border-color: var(--accent);
-  color: var(--color-white);
-  background-color: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--color-black);
+  background-color: var(--accent);
 }
 
 .custom-dropdown-item.selected:hover {
-  background-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  background-color: var(--accent-hover);
 }
 
 .modal-actions {
@@ -287,45 +289,40 @@ const setResourcePack = (val: number | null) => {
   margin-top: 16px;
 }
 
-.btn {
-  height: 40px;
-  padding: 0 20px;
+.modal-btn {
+  height: 36px;
+  padding: 0 16px;
+  background-color: var(--surface-1);
+  border: 4px solid var(--border-line);
   border-radius: 12px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  border: none;
-}
-
-.btn-secondary {
-  background-color: transparent;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
   color: var(--text-muted);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-family: inherit;
+  outline: none;
 }
 
-.btn-secondary:hover {
+.modal-btn:hover:not(:disabled) {
   background-color: var(--surface-hover);
-  color: var(--text-main);
 }
 
-.btn-success {
+.modal-btn:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.modal-btn.primary {
   border-color: var(--accent);
-  color: var(--color-white);
+  color: var(--text-main);
   background-color: color-mix(in srgb, var(--accent) 15%, transparent);
-  border: 1px solid transparent;
 }
 
-.btn-success:hover {
-  background-color: var(--accent);
-  color: var(--color-black);
-}
-
-.btn:active {
-  transform: scale(0.96);
+.modal-btn.primary:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
 .dropdown-fade-enter-active,

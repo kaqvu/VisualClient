@@ -10,6 +10,7 @@ import IconGamepad from '../components/icons/IconGamepad.vue';
 import IconFolder from '../components/icons/IconFolder.vue';
 import IconTrash from '../components/icons/IconTrash.vue';
 import IconPlus from '../components/icons/IconPlus.vue';
+import IconStop from '../components/icons/IconStop.vue';
 import LoginRequiredModal from '../components/modals/LoginRequiredModal.vue';
 import EditServerModal from '../components/modals/EditServerModal.vue';
 import DeleteServerModal from '../components/modals/DeleteServerModal.vue';
@@ -20,8 +21,11 @@ const props = defineProps<{
 
 const emit = defineEmits(['openSettings', 'openAccounts']);
 
-const { instances } = useInstances();
+const { instances, runningInstances, startingInstances, killInstance, launchInstance } = useInstances();
 const { accounts } = useAccounts();
+
+const isStarting = computed(() => instance.value ? startingInstances.value.includes(instance.value.id) : false);
+const isRunning = computed(() => instance.value ? runningInstances.value.includes(instance.value.id) : false);
 
 const instance = computed(() => {
   return instances.value.find((i: Instance) => i.id === props.instanceId);
@@ -274,12 +278,18 @@ watch(() => props.instanceId, () => {
 const showLoginModal = ref(false);
 
 const handlePlay = async () => {
+  if (isRunning.value || isStarting.value) {
+    if (instance.value) {
+      await killInstance(instance.value.id);
+    }
+    return;
+  }
   const currentAccount = accounts.value.find(a => a.active)?.username;
   if (!currentAccount) {
     showLoginModal.value = true;
   } else {
     try {
-      await invoke('launch_instance', { 
+      await launchInstance({ 
         id: instance.value!.id, 
         username: currentAccount, 
         launchingText: t('instance.launching'),
@@ -304,12 +314,18 @@ const isWorldQuickPlaySupported = computed(() => {
 });
 
 const handlePlayServer = async (ip: string) => {
+  if (isRunning.value || isStarting.value) {
+    if (instance.value) {
+      await killInstance(instance.value.id);
+    }
+    return;
+  }
   const currentAccount = accounts.value.find(a => a.active)?.username;
   if (!currentAccount) {
     showLoginModal.value = true;
   } else {
     try {
-      await invoke('launch_instance', { 
+      await launchInstance({ 
         id: instance.value!.id, 
         username: currentAccount, 
         launchingText: t('instance.launching'),
@@ -323,12 +339,18 @@ const handlePlayServer = async (ip: string) => {
 };
 
 const handlePlayWorld = async (folderName: string) => {
+  if (isRunning.value || isStarting.value) {
+    if (instance.value) {
+      await killInstance(instance.value.id);
+    }
+    return;
+  }
   const currentAccount = accounts.value.find(a => a.active)?.username;
   if (!currentAccount) {
     showLoginModal.value = true;
   } else {
     try {
-      await invoke('launch_instance', { 
+      await launchInstance({ 
         id: instance.value!.id, 
         username: currentAccount, 
         launchingText: t('instance.launching'),
@@ -398,9 +420,10 @@ const formatLastPlayed = (timestamp: number) => {
         </div>
       </div>
       <div class="actions">
-        <button class="btn-play" @click="handlePlay">
-          <IconPlay class="play-icon" />
-          {{ t('instance.play') || 'Play' }}
+        <button class="btn-play" :class="{ 'is-running': isRunning, 'is-starting': isStarting }" @click="handlePlay">
+          <IconStop v-if="isRunning || isStarting" class="play-icon" />
+          <IconPlay v-else class="play-icon" />
+          {{ isRunning ? (t('instance.stop') || 'Stop') : isStarting ? (t('instance.starting') || 'Starting...') : (t('instance.play') || 'Play') }}
         </button>
         <button class="btn-settings" @click="emit('openSettings', instance)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -483,9 +506,10 @@ const formatLastPlayed = (timestamp: number) => {
               <div v-else class="server-motd" :class="{ 'is-loading': server.loadingMotd }" v-html="server.motdHtml"></div>
             </div>
             <div class="server-actions">
-              <button class="btn-play-server" @click="handlePlayServer(server.ip)">
-                <IconPlay class="play-icon-server" />
-                {{ t('instance.play') || 'Play' }}
+              <button class="btn-play-server" :class="{ 'is-running': isRunning, 'is-starting': isStarting }" @click="handlePlayServer(server.ip)">
+                <IconStop v-if="isRunning || isStarting" class="play-icon-server" />
+                <IconPlay v-else class="play-icon-server" />
+                {{ isRunning ? (t('instance.stop') || 'Stop') : isStarting ? (t('instance.starting') || 'Starting...') : (t('instance.play') || 'Play') }}
               </button>
               
               <div class="server-menu-wrapper" @click.stop>
@@ -542,9 +566,10 @@ const formatLastPlayed = (timestamp: number) => {
               <div class="server-motd is-world">{{ formatLastPlayed(world.last_played) }}</div>
             </div>
             <div class="server-actions" v-if="isWorldQuickPlaySupported">
-              <button class="btn-play-server" @click="handlePlayWorld(world.folder_name)">
-                <IconPlay class="play-icon-server" />
-                {{ t('instance.play') || 'Play' }}
+              <button class="btn-play-server" :class="{ 'is-running': isRunning, 'is-starting': isStarting }" @click="handlePlayWorld(world.folder_name)">
+                <IconStop v-if="isRunning || isStarting" class="play-icon-server" />
+                <IconPlay v-else class="play-icon-server" />
+                {{ isRunning ? (t('instance.stop') || 'Stop') : isStarting ? (t('instance.starting') || 'Starting...') : (t('instance.play') || 'Play') }}
               </button>
             </div>
           </div>
@@ -816,6 +841,22 @@ const formatLastPlayed = (timestamp: number) => {
   transform: scale(0.96);
 }
 
+.btn-play.is-running {
+  background-color: var(--danger);
+  color: var(--color-black);
+}
+
+.btn-play.is-running:hover {
+  background-color: color-mix(in srgb, var(--danger) 85%, black);
+  color: var(--color-black);
+}
+
+.btn-play.is-starting {
+  background-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  color: color-mix(in srgb, var(--color-black) 70%, transparent);
+  cursor: default;
+}
+
 .btn-play-server {
   background-color: transparent;
   color: var(--text-main);
@@ -843,10 +884,27 @@ const formatLastPlayed = (timestamp: number) => {
   transform: scale(0.96);
 }
 
+.btn-play-server.is-running {
+  background-color: var(--danger);
+  color: var(--color-black);
+  border-color: var(--danger);
+}
+
+.btn-play-server.is-running:hover {
+  background-color: color-mix(in srgb, var(--danger) 85%, black);
+  color: var(--color-black);
+}
+
+.btn-play-server.is-starting {
+  background-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  color: var(--color-white);
+  border-color: transparent;
+  cursor: default;
+}
+
 .play-icon-server {
   width: 18px;
   height: 18px;
-  fill: currentColor;
 }
 
 .server-actions {
@@ -893,7 +951,7 @@ const formatLastPlayed = (timestamp: number) => {
   border-radius: 12px;
   padding: 6px;
   min-width: 200px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--color-black) 50%, transparent);
   z-index: 100;
   display: flex;
   flex-direction: column;
@@ -1185,13 +1243,13 @@ const formatLastPlayed = (timestamp: number) => {
 }
 
 .server-icon {
-  color: #55ff55;
-  background-color: color-mix(in srgb, #55ff55 10%, transparent);
+  color: var(--mc-green);
+  background-color: color-mix(in srgb, var(--mc-green) 10%, transparent);
 }
 
 .world-icon {
-  color: #55ffff;
-  background-color: color-mix(in srgb, #55ffff 10%, transparent);
+  color: var(--mc-aqua);
+  background-color: color-mix(in srgb, var(--mc-aqua) 10%, transparent);
 }
 
 .item-info {
@@ -1250,7 +1308,7 @@ const formatLastPlayed = (timestamp: number) => {
   border: 1px solid var(--border-line);
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 40px color-mix(in srgb, var(--color-black) 50%, transparent);
   padding: 24px;
   gap: 20px;
 }

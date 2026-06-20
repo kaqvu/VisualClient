@@ -59,7 +59,7 @@ const emit = defineEmits(['close', 'confirm']);
   border: 1px solid var(--border-line);
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 40px color-mix(in srgb, var(--color-black) 50%, transparent);
   padding: 24px;
   gap: 20px;
 }

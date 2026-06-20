@@ -9,6 +9,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
+        .manage(core::launcher::LauncherState(std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashMap::new()))))
         .invoke_handler(tauri::generate_handler![
             settings::get_settings,
             settings::save_settings,
@@ -18,6 +19,8 @@ pub fn run() {
             core::launcher::delete_instance,
             core::launcher::open_instance_folder,
             core::launcher::launch_instance,
+            core::launcher::kill_instance,
+            core::launcher::get_running_instances,
             core::minecraft::fetch_forge_versions,
             commands::accounts::get_accounts,
             commands::accounts::add_account,

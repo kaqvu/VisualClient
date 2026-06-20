@@ -59,7 +59,7 @@ onMounted(() => {
 <template>
   <SplashScreen />
   <div class="window-frame" v-if="isLanguageLoaded">
-    <TitleBar />
+    <TitleBar @openInstance="(id) => activeCategory = 'instance_' + id" />
     <div class="window-body">
       <Sidebar 
         :activeCategory="activeCategory" 

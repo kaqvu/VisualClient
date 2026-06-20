@@ -61,6 +61,10 @@
   },
   "instance": {
     "play": "Play",
+    "stop": "Stop",
+    "starting": "Starting...",
+    "view_instance": "View instance",
+    "no_instances": "No instances running",
     "launching": "Starting Minecraft...",
     "servers": "Servers",
     "worlds": "Worlds",

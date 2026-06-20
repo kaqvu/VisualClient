@@ -1,8 +1,12 @@
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
-use tauri::{AppHandle, Emitter};
+use tauri::{AppHandle, Emitter, Manager, State};
 use futures_util::StreamExt;
+use std::sync::{Arc, Mutex};
+use std::collections::HashMap;
+
+pub struct LauncherState(pub Arc<Mutex<HashMap<String, tokio::sync::oneshot::Sender<()>>>>);
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Instance {
@@ -412,7 +416,7 @@ pub async fn launch_instance(
         return Err("No Java path".to_string());
     };
 
-    let mut cmd = std::process::Command::new(&java_path);
+    let mut cmd = tokio::process::Command::new(&java_path);
     cmd.current_dir(&profiles_dir);
 
     cmd.arg("-Xmx2G");
@@ -529,13 +533,30 @@ pub async fn launch_instance(
 
     #[cfg(target_os = "windows")]
     {
-        use std::os::windows::process::CommandExt;
         cmd.creation_flags(0x08000000); // CREATE_NO_WINDOW
     }
 
-    cmd.spawn().map_err(|e| format!("Failed to start game: {}", e))?;
+    let mut child = cmd.spawn().map_err(|e| format!("Failed to start game: {}", e))?;
 
-    tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+    let (tx, rx) = tokio::sync::oneshot::channel::<()>();
+    {
+        let state: State<LauncherState> = app.state();
+        state.0.lock().unwrap().insert(id.clone(), tx);
+    }
+    
+    let app_clone = app.clone();
+    let id_clone = id.clone();
+    tauri::async_runtime::spawn(async move {
+        tokio::select! {
+            _ = child.wait() => {}
+            _ = rx => {
+                let _ = child.kill().await;
+            }
+        }
+        let state: State<LauncherState> = app_clone.state();
+        state.0.lock().unwrap().remove(&id_clone);
+        let _ = app_clone.emit("instance_stopped", id_clone);
+    });
 
     let _ = app.emit("download_progress", ProgressPayload {
         task: "Done".to_string(),
@@ -543,4 +564,20 @@ pub async fn launch_instance(
     });
 
     Ok(())
+}
+
+#[tauri::command]
+pub fn kill_instance(app: AppHandle, id: String) -> Result<(), String> {
+    let state: State<LauncherState> = app.state();
+    if let Some(tx) = state.0.lock().unwrap().remove(&id) {
+        let _ = tx.send(());
+    }
+    Ok(())
+}
+
+#[tauri::command]
+pub fn get_running_instances(app: AppHandle) -> Result<Vec<String>, String> {
+    let state: State<LauncherState> = app.state();
+    let keys: Vec<String> = state.0.lock().unwrap().keys().cloned().collect();
+    Ok(keys)
 }

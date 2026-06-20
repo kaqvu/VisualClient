@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { invoke } from '@tauri-apps/api/core';
 import { t } from '../composables/useI18n';
 import { useInstances } from '../composables/useInstances';
 import IconInstance from '../components/icons/IconInstance.vue';
 import IconGamepad from '../components/icons/IconGamepad.vue';
 import IconPlay from '../components/icons/IconPlay.vue';
+import IconStop from '../components/icons/IconStop.vue';
 import DeleteInstanceModal from '../components/modals/DeleteInstanceModal.vue';
 import { useAccounts } from '../composables/useAccounts';
 
 const emit = defineEmits(['createInstance', 'openInstance', 'openAccounts']);
-const { instances, deleteInstance } = useInstances();
+const { instances, deleteInstance, runningInstances, startingInstances, killInstance, launchInstance } = useInstances();
 const { accounts } = useAccounts();
 
 const instanceToDelete = ref<{id: string, name: string} | null>(null);
@@ -24,14 +24,21 @@ const confirmDelete = async () => {
   }
 };
 
+const isInstanceRunning = (id: string) => runningInstances.value.includes(id) || startingInstances.value.includes(id);
+
 const handleQuickPlay = async (instance: {id: string, name: string}) => {
+  if (isInstanceRunning(instance.id)) {
+    await killInstance(instance.id);
+    return;
+  }
+  
   const currentAccount = accounts.value.find(a => a.active)?.username;
   if (!currentAccount) {
     playTargetInstance.value = instance;
     showLoginModal.value = true;
   } else {
     try {
-      await invoke('launch_instance', { id: instance.id, username: currentAccount, launchingText: t('instance.launching') });
+      await launchInstance({ id: instance.id, username: currentAccount, launchingText: t('instance.launching') });
     } catch (e) {
       console.error(e);
     }
@@ -72,8 +79,9 @@ const handleAddAccountClick = () => {
         <div class="instance-info-left">
           <div class="instance-avatar">
             <IconInstance class="library-icon-svg" />
-            <div class="quick-play-overlay" @click.stop="handleQuickPlay(instance)">
-              <IconPlay class="quick-play-icon" />
+            <div class="quick-play-overlay" :class="{ 'is-running': isInstanceRunning(instance.id) }" @click.stop="handleQuickPlay(instance)">
+              <IconStop v-if="isInstanceRunning(instance.id)" class="quick-stop-icon" />
+              <IconPlay v-else class="quick-play-icon" />
             </div>
           </div>
           <div class="instance-info">
@@ -257,6 +265,16 @@ const handleAddAccountClick = () => {
   transform: scale(1);
 }
 
+.quick-play-overlay.is-running {
+  opacity: 1;
+  transform: scale(1);
+  background-color: var(--danger);
+}
+
+.quick-play-overlay.is-running:hover {
+  background-color: color-mix(in srgb, var(--danger) 85%, black);
+}
+
 .quick-play-overlay:hover {
   background-color: var(--accent-hover);
 }
@@ -269,6 +287,13 @@ const handleAddAccountClick = () => {
   width: 18px;
   height: 18px;
   margin-right: 1px;
+  pointer-events: none;
+}
+
+.quick-stop-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-black);
   pointer-events: none;
 }
 

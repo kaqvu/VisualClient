@@ -1,8 +1,79 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { checkForUpdates } from '../../composables/useUpdater';
 import { t } from '../../composables/useI18n';
+import { useInstances } from '../../composables/useInstances';
+import IconStop from '../icons/IconStop.vue';
+
+const { instances, runningInstances, killInstance } = useInstances();
+
+const emit = defineEmits(['openInstance']);
+
+const selectedInstanceId = ref<string | null>(null);
+
+const activeInstanceId = computed(() => {
+  if (runningInstances.value.length === 0) return null;
+  if (selectedInstanceId.value && runningInstances.value.includes(selectedInstanceId.value)) {
+    return selectedInstanceId.value;
+  }
+  return runningInstances.value[0];
+});
+
+const activeInstanceName = computed(() => {
+  if (!activeInstanceId.value) return '';
+  const inst = instances.value.find(i => i.id === activeInstanceId.value);
+  return inst ? inst.name : 'Minecraft';
+});
+
+const isDropdownOpen = ref(false);
+
+const toggleDropdown = () => {
+  if (runningInstances.value.length > 1) {
+    isDropdownOpen.value = !isDropdownOpen.value;
+  }
+};
+
+watch(() => runningInstances.value.length, (newLen) => {
+  if (newLen < 2) {
+    isDropdownOpen.value = false;
+  }
+});
+
+const closeDropdown = (e: MouseEvent) => {
+  const target = e.target as HTMLElement;
+  if (!target.closest('.active-instance-tile')) {
+    isDropdownOpen.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', closeDropdown);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', closeDropdown);
+});
+
+const selectInstance = (id: string) => {
+  selectedInstanceId.value = id;
+  isDropdownOpen.value = false;
+};
+
+const handleStopClick = async (e: Event, id?: string) => {
+  e.stopPropagation();
+  const targetId = id || activeInstanceId.value;
+  if (targetId) {
+    await killInstance(targetId);
+  }
+};
+
+const goToInstance = (e: Event, id: string | null) => {
+  e.stopPropagation();
+  if (id) {
+    emit('openInstance', id);
+  }
+};
 
 const appWindow = getCurrentWindow();
 
@@ -44,9 +115,8 @@ const close = () => {
 };
 
 const startDrag = (e: MouseEvent) => {
-
   const target = e.target as HTMLElement;
-  if (!target.closest('.window-control')) {
+  if (!target.closest('.window-control') && !target.closest('.active-instance-tile')) {
     appWindow.startDragging();
   }
 };
@@ -62,6 +132,38 @@ const startDrag = (e: MouseEvent) => {
     </div>
     
     <div class="titlebar-controls">
+      <div v-if="runningInstances.length > 0" class="active-instance-tile" @click="toggleDropdown">
+        <div class="active-circle"></div>
+        <span class="active-name" :data-tooltip="t('instance.view_instance') || 'View instance'" @click="goToInstance($event, activeInstanceId)">{{ activeInstanceName }}</span>
+        <IconStop class="stop-btn" @click="handleStopClick($event)" />
+        <svg v-if="runningInstances.length > 1" class="dropdown-arrow" :class="{ 'is-open': isDropdownOpen }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+
+        <Transition name="dropdown">
+          <div v-if="isDropdownOpen && runningInstances.length > 1" class="instance-dropdown" @click.stop>
+            <div 
+              v-for="id in runningInstances" 
+              :key="id" 
+              class="dropdown-item"
+              @click="selectInstance(id)"
+            >
+              <div class="item-name-wrapper">
+                <span class="item-name">{{ instances.find(i => i.id === id)?.name || 'Minecraft' }}</span>
+                <svg v-if="id === activeInstanceId" class="active-star" viewBox="0 0 24 24" fill="#ffd700" stroke="#ffd700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+              </div>
+              <IconStop class="stop-btn-small" @click="handleStopClick($event, id)" />
+            </div>
+          </div>
+        </Transition>
+      </div>
+      <div v-else class="active-instance-tile empty-state">
+        <div class="active-circle inactive"></div>
+        <span class="active-name inactive-text">{{ t('instance.no_instances') || 'No instances running' }}</span>
+      </div>
+
       <div class="window-control update-control" @click="handleUpdateCheck" :data-tooltip="t('updater.check_tooltip')">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;">
           <path d="M4 12V10a4 4 0 0 1 4-4h12"></path>
@@ -209,5 +311,170 @@ const startDrag = (e: MouseEvent) => {
 .tooltip-fade-enter-to, .tooltip-fade-leave-from {
   opacity: 1;
   transform: translate(-50%, 0);
+}
+
+.active-instance-tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: var(--surface-1);
+  border-radius: 12px;
+  padding: 4px 8px 4px 8px;
+  gap: 8px;
+  margin-right: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.active-instance-tile:hover {
+  background-color: var(--surface-2);
+}
+
+.active-circle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+
+.active-circle.inactive {
+  background-color: var(--text-muted);
+  box-shadow: none;
+}
+
+.active-name {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.active-name:hover {
+  text-decoration: underline;
+  color: var(--text-main);
+}
+
+.active-name.inactive-text {
+  cursor: default;
+}
+
+.active-name.inactive-text:hover {
+  text-decoration: none;
+  color: var(--text-muted);
+}
+
+.empty-state {
+  cursor: default;
+}
+
+.empty-state:hover {
+  background-color: var(--surface-1);
+}
+
+.stop-btn {
+  width: 16px;
+  height: 16px;
+  color: var(--danger);
+  transition: transform 0.2s, filter 0.2s;
+  cursor: pointer;
+}
+
+.stop-btn:hover {
+  filter: brightness(1.2);
+}
+
+.stop-btn:active {
+  transform: scale(0.9);
+}
+
+.dropdown-arrow {
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+}
+
+.dropdown-arrow.is-open {
+  transform: rotate(180deg);
+}
+
+.instance-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background-color: var(--bg-shell);
+  border: 1px solid var(--border-line);
+  border-radius: 12px;
+  padding: 4px;
+  min-width: 180px;
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-black) 50%, transparent);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  gap: 16px;
+}
+
+.dropdown-item:hover {
+  background-color: var(--surface-hover);
+}
+
+.item-name-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.active-star {
+  width: 14px;
+  height: 14px;
+}
+
+.item-name {
+  font-size: 13px;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.stop-btn-small {
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  border-radius: 50%;
+  color: var(--danger);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.stop-btn-small:hover {
+  background-color: color-mix(in srgb, var(--danger) 15%, transparent);
+}
+
+.stop-btn-small:active {
+  transform: scale(0.85);
+}
+
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: opacity 0.2s, transform 0.2s;
+}
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
 }
 </style>

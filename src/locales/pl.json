@@ -61,6 +61,10 @@
   },
   "instance": {
     "play": "Graj",
+    "stop": "Zatrzymaj",
+    "starting": "Uruchamianie...",
+    "view_instance": "Zobacz instancję",
+    "no_instances": "Brak uruchomionych instancji",
     "launching": "Uruchamianie...",
     "servers": "Serwery",
     "worlds": "Światy",
