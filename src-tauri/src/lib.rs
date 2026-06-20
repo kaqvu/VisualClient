@@ -1,10 +1,6 @@
+pub mod commands;
+pub mod core;
 mod settings;
-mod launcher;
-mod accounts;
-mod minecraft;
-mod auth;
-mod crypto;
-mod instances_data;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -16,27 +12,27 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             settings::get_settings,
             settings::save_settings,
-            launcher::get_instances,
-            launcher::create_instance,
-            launcher::rename_instance,
-            launcher::delete_instance,
-            launcher::open_instance_folder,
-            launcher::launch_instance,
-            minecraft::fetch_forge_versions,
-            accounts::get_accounts,
-            accounts::add_account,
-            accounts::add_microsoft_account,
-            accounts::select_account,
-            accounts::delete_account,
-            auth::start_microsoft_login,
-            auth::cancel_microsoft_login,
-            instances_data::get_instance_servers,
-            instances_data::add_instance_server,
-            instances_data::update_instance_server,
-            instances_data::remove_instance_server,
-            instances_data::update_server_icon,
-            instances_data::get_instance_worlds,
-            instances_data::ping_server
+            core::launcher::get_instances,
+            core::launcher::create_instance,
+            core::launcher::rename_instance,
+            core::launcher::delete_instance,
+            core::launcher::open_instance_folder,
+            core::launcher::launch_instance,
+            core::minecraft::fetch_forge_versions,
+            commands::accounts::get_accounts,
+            commands::accounts::add_account,
+            commands::accounts::add_microsoft_account,
+            commands::accounts::select_account,
+            commands::accounts::delete_account,
+            commands::auth::start_microsoft_login,
+            commands::auth::cancel_microsoft_login,
+            commands::instances::get_instance_servers,
+            commands::instances::add_instance_server,
+            commands::instances::update_instance_server,
+            commands::instances::remove_instance_server,
+            commands::instances::update_server_icon,
+            commands::instances::get_instance_worlds,
+            commands::instances::ping_server
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

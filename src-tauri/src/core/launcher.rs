@@ -42,7 +42,7 @@ fn get_instances_file() -> PathBuf {
 #[tauri::command]
 pub fn get_instances() -> Result<Vec<Instance>, String> {
     let file_path = get_instances_file();
-    let content = crate::crypto::read_encrypted_file(&file_path)?;
+    let content = crate::core::crypto::read_encrypted_file(&file_path)?;
     if content.is_empty() {
         return Ok(Vec::new());
     }
@@ -292,12 +292,12 @@ pub async fn create_instance(
     }
 
     tokio::spawn(async move {
-        crate::minecraft::download_minecraft(&mc_v, &mc_dir_clone, &app_clone).await?;
+        crate::core::minecraft::download_minecraft(&mc_v, &mc_dir_clone, &app_clone).await?;
         if loader_clone == "fabric" {
-            crate::minecraft::download_fabric(&mc_v, &mc_dir_clone, &app_clone).await?;
+            crate::core::minecraft::download_fabric(&mc_v, &mc_dir_clone, &app_clone).await?;
         } else if loader_clone == "forge" {
             if let Some(fv) = forge_v {
-                crate::minecraft::download_forge(&mc_v, &fv, &mc_dir_clone, &java_path_clone, &app_clone).await?;
+                crate::core::minecraft::download_forge(&mc_v, &fv, &mc_dir_clone, &java_path_clone, &app_clone).await?;
             }
         }
         Ok::<(), String>(())
@@ -317,7 +317,7 @@ pub async fn create_instance(
     let mut instances = get_instances().unwrap_or_default();
     instances.push(new_instance);
     
-    crate::crypto::write_encrypted_file(
+    crate::core::crypto::write_encrypted_file(
         &get_instances_file(),
         &serde_json::to_string_pretty(&instances).map_err(|e| e.to_string())?
     )?;
@@ -335,7 +335,7 @@ pub fn rename_instance(id: String, new_name: String) -> Result<(), String> {
     let mut instances = get_instances().unwrap_or_default();
     if let Some(inst) = instances.iter_mut().find(|i| i.id == id) {
         inst.name = new_name;
-        crate::crypto::write_encrypted_file(
+        crate::core::crypto::write_encrypted_file(
             &get_instances_file(),
             &serde_json::to_string_pretty(&instances).map_err(|e| e.to_string())?
         )?;
@@ -347,7 +347,7 @@ pub fn rename_instance(id: String, new_name: String) -> Result<(), String> {
 pub fn delete_instance(id: String) -> Result<(), String> {
     let mut instances = get_instances().unwrap_or_default();
     instances.retain(|i| i.id != id);
-    crate::crypto::write_encrypted_file(
+    crate::core::crypto::write_encrypted_file(
         &get_instances_file(),
         &serde_json::to_string_pretty(&instances).map_err(|e| e.to_string())?
     )?;
@@ -444,7 +444,7 @@ pub async fn launch_instance(
         cmd.arg("--enable-native-access=ALL-UNNAMED");
     }
 
-    let launch_info = crate::minecraft::get_launch_info(&instance.version, &instance.loader, &mc_dir)?;
+    let launch_info = crate::core::minecraft::get_launch_info(&instance.version, &instance.loader, &mc_dir)?;
     
     let separator = if cfg!(target_os = "windows") { ";" } else { ":" };
     for arg in launch_info.jvm_args {
@@ -460,9 +460,9 @@ pub async fn launch_instance(
     
     cmd.arg(&launch_info.main_class);
 
-    let accounts = crate::accounts::get_accounts().unwrap_or_default();
+    let accounts = crate::commands::accounts::get_accounts().unwrap_or_default();
     let account = accounts.into_iter().find(|a| a.username == username).unwrap_or_else(|| {
-        crate::accounts::Account {
+        crate::commands::accounts::Account {
             username: username.clone(),
             active: true,
             account_type: Some("Offline".to_string()),

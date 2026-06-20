@@ -28,7 +28,7 @@ onMounted(() => {
   
   const progressInterval = setInterval(() => {
     if (initialProgress.value < 85) {
-      initialProgress.value += Math.random() * 8 + 2; // Simulate loading jumps
+      initialProgress.value += Math.random() * 8 + 2;
     }
   }, 40);
   
@@ -39,7 +39,7 @@ onMounted(() => {
         isInitialLoad.value = false;
         clearInterval(check);
         clearInterval(progressInterval);
-      }, 200); // Give it time to animate to 100% before fading out
+      }, 200);
     }
   }, 50);
 });

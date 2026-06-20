@@ -34,7 +34,7 @@ fn get_accounts_file() -> PathBuf {
 #[tauri::command]
 pub fn get_accounts() -> Result<Vec<Account>, String> {
     let file = get_accounts_file();
-    let content = crate::crypto::read_encrypted_file(&file)?;
+    let content = crate::core::crypto::read_encrypted_file(&file)?;
     if content.is_empty() {
         return Ok(Vec::new());
     }
@@ -48,7 +48,7 @@ pub fn add_account(username: String, account_type: String) -> Result<(), String>
     if !accounts.iter().any(|a| a.username == username) {
         accounts.push(Account { username, active: false, account_type: Some(account_type), uuid: None, mc_token: None, refresh_token: None });
         let file = get_accounts_file();
-        crate::crypto::write_encrypted_file(&file, &serde_json::to_string_pretty(&accounts).unwrap())?;
+        crate::core::crypto::write_encrypted_file(&file, &serde_json::to_string_pretty(&accounts).unwrap())?;
     }
     Ok(())
 }
@@ -75,7 +75,7 @@ pub fn add_microsoft_account(username: String, uuid: String, mctoken: String, re
     }
 
     let file = get_accounts_file();
-    crate::crypto::write_encrypted_file(&file, &serde_json::to_string_pretty(&accounts).unwrap())?;
+    crate::core::crypto::write_encrypted_file(&file, &serde_json::to_string_pretty(&accounts).unwrap())?;
     
     Ok(())
 }
@@ -86,7 +86,7 @@ pub fn select_account(username: String) -> Result<(), String> {
     for acc in &mut accounts {
         acc.active = acc.username == username;
     }
-    crate::crypto::write_encrypted_file(&get_accounts_file(), &serde_json::to_string_pretty(&accounts).unwrap())?;
+    crate::core::crypto::write_encrypted_file(&get_accounts_file(), &serde_json::to_string_pretty(&accounts).unwrap())?;
     Ok(())
 }
 
@@ -94,6 +94,6 @@ pub fn select_account(username: String) -> Result<(), String> {
 pub fn delete_account(username: String) -> Result<(), String> {
     let mut accounts = get_accounts().unwrap_or_default();
     accounts.retain(|a| a.username != username);
-    crate::crypto::write_encrypted_file(&get_accounts_file(), &serde_json::to_string_pretty(&accounts).unwrap())?;
+    crate::core::crypto::write_encrypted_file(&get_accounts_file(), &serde_json::to_string_pretty(&accounts).unwrap())?;
     Ok(())
 }

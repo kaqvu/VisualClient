@@ -8,7 +8,7 @@ import { currentLanguage, setLanguage, t } from '../../../composables/useI18n';
     
     <div class="language-list">
       
-      <!-- Option for Polish -->
+
       <div 
         class="language-tile" 
         :class="{ active: currentLanguage === 'pl' }"
@@ -25,7 +25,7 @@ import { currentLanguage, setLanguage, t } from '../../../composables/useI18n';
         </div>
       </div>
 
-      <!-- Option for English -->
+
       <div 
         class="language-tile" 
         :class="{ active: currentLanguage === 'en' }"

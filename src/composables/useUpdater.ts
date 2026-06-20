@@ -26,7 +26,7 @@ export async function checkForUpdates(manual = false) {
 
   try {
     if (manual) {
-      // Add a small delay so the splash screen doesn't just flash if the check is very fast
+
       await new Promise(resolve => setTimeout(resolve, 600));
     }
     const update = await check();

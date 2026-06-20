@@ -52,7 +52,7 @@ struct LevelData {
 
 #[tauri::command]
 pub fn get_instance_servers(id: String) -> Result<Vec<ServerItem>, String> {
-    let vc_dir = crate::launcher::get_dot_visualclient_dir();
+    let vc_dir = crate::core::launcher::get_dot_visualclient_dir();
     let profiles_dir = vc_dir.join("profiles").join(&id);
     let servers_dat = profiles_dir.join("servers.dat");
     
@@ -92,7 +92,7 @@ pub fn update_instance_server(
     new_ip: String,
     accept_textures: Option<u8>
 ) -> Result<(), String> {
-    let vc_dir = crate::launcher::get_dot_visualclient_dir();
+    let vc_dir = crate::core::launcher::get_dot_visualclient_dir();
     let profiles_dir = vc_dir.join("profiles").join(&id);
     let servers_dat = profiles_dir.join("servers.dat");
     
@@ -123,7 +123,7 @@ pub fn update_instance_server(
 
 #[tauri::command]
 pub fn remove_instance_server(id: String, ip_to_remove: String) -> Result<(), String> {
-    let vc_dir = crate::launcher::get_dot_visualclient_dir();
+    let vc_dir = crate::core::launcher::get_dot_visualclient_dir();
     let profiles_dir = vc_dir.join("profiles").join(&id);
     let servers_dat = profiles_dir.join("servers.dat");
     
@@ -151,7 +151,7 @@ pub fn remove_instance_server(id: String, ip_to_remove: String) -> Result<(), St
 
 #[tauri::command]
 pub fn update_server_icon(id: String, ip_to_match: String, icon_base64: String) -> Result<(), String> {
-    let vc_dir = crate::launcher::get_dot_visualclient_dir();
+    let vc_dir = crate::core::launcher::get_dot_visualclient_dir();
     let profiles_dir = vc_dir.join("profiles").join(&id);
     let servers_dat = profiles_dir.join("servers.dat");
     
@@ -190,7 +190,7 @@ pub fn add_instance_server(
     ip: String,
     accept_textures: Option<u8>
 ) -> Result<(), String> {
-    let vc_dir = crate::launcher::get_dot_visualclient_dir();
+    let vc_dir = crate::core::launcher::get_dot_visualclient_dir();
     let profiles_dir = vc_dir.join("profiles").join(&id);
     let servers_dat = profiles_dir.join("servers.dat");
     
@@ -221,7 +221,7 @@ pub fn add_instance_server(
 
 #[tauri::command]
 pub fn get_instance_worlds(id: String) -> Result<Vec<WorldItem>, String> {
-    let vc_dir = crate::launcher::get_dot_visualclient_dir();
+    let vc_dir = crate::core::launcher::get_dot_visualclient_dir();
     let profiles_dir = vc_dir.join("profiles").join(&id);
     let saves_dir = profiles_dir.join("saves");
     

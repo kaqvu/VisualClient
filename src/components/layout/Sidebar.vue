@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { ref } from 'vue';
 import IconHome from '../icons/IconHome.vue';
 import IconLibrary from '../icons/IconLibrary.vue';
@@ -32,7 +32,7 @@ const handleMouseOver = (e: MouseEvent) => {
 const handleMouseOut = (e: MouseEvent) => {
   const target = (e.target as HTMLElement).closest('[data-tooltip]');
   const related = e.relatedTarget as Node | null;
-  // If moving between child elements inside the same nav-item, do not hide
+
   if (target && related && target.contains(related)) {
     return;
   }
@@ -126,7 +126,7 @@ const handleMouseOut = (e: MouseEvent) => {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-height: 164px; /* 3 items (44px) + 2 gaps (16px) */
+  max-height: 164px;
   overflow-y: auto;
   overflow-x: hidden;
   width: 100%;

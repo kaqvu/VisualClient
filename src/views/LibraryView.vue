@@ -216,7 +216,7 @@ const handleAddAccountClick = () => {
   align-items: center;
   gap: 14px;
   flex: 1;
-  min-width: 0; /* allows text truncation */
+  min-width: 0;
 }
 
 .instance-avatar {
@@ -333,7 +333,7 @@ const handleAddAccountClick = () => {
   transform: scale(0.85);
 }
 
-/* Modal CSS */
+
 .modal-backdrop {
   position: fixed;
   top: 0;

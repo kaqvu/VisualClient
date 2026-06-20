@@ -44,7 +44,7 @@ const close = () => {
 };
 
 const startDrag = (e: MouseEvent) => {
-  // Only start dragging if the target is not a button
+
   const target = e.target as HTMLElement;
   if (!target.closest('.window-control')) {
     appWindow.startDragging();

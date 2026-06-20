@@ -45,7 +45,7 @@ const handleCreate = () => {
   emit('close');
   
   (async () => {
-    let javaVersion = 8; // default fallback
+    let javaVersion = 8;
     if (url) {
       try {
         const res = await fetch(url);

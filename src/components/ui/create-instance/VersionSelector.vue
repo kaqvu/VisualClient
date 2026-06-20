@@ -318,7 +318,7 @@ const selectVersion = (v: { id: string, label: string }) => {
   color: var(--text-muted);
 }
 
-/* Dropdown Animation */
+
 .dropdown-fade-enter-active,
 .dropdown-fade-leave-active {
   transition: opacity 0.2s, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);

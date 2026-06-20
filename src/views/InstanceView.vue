@@ -11,6 +11,8 @@ import IconFolder from '../components/icons/IconFolder.vue';
 import IconTrash from '../components/icons/IconTrash.vue';
 import IconPlus from '../components/icons/IconPlus.vue';
 import LoginRequiredModal from '../components/modals/LoginRequiredModal.vue';
+import EditServerModal from '../components/modals/EditServerModal.vue';
+import DeleteServerModal from '../components/modals/DeleteServerModal.vue';
 
 const props = defineProps<{
   instanceId: string
@@ -550,95 +552,19 @@ const formatLastPlayed = (timestamp: number) => {
       </div>
     </div>
 
-    <Transition name="modal">
-      <div v-if="isEditModalOpen" class="modal-backdrop" @click="closeEditModal">
-      <div class="modal-content" @click.stop>
-        <div class="modal-header">
-          <h2 class="modal-title">{{ isAddingServer ? t('instance.add_server_title') : t('instance.edit_server_title') }}</h2>
-          <div class="close-control" @click="closeEditModal">
-            <svg width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 3L9 9M9 3L3 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label>{{ t('instance.server_name') }}</label>
-          <input type="text" v-model="editServerForm.name" class="input-field" placeholder="Minecraft Server" />
-        </div>
-        
-        <div class="form-group">
-          <label>{{ t('instance.server_address') }}</label>
-          <input type="text" v-model="editServerForm.ip" class="input-field" placeholder="example.visualclient.com.pl" />
-        </div>
-        
-        <div class="form-group">
-          <label>{{ t('instance.server_resource_packs') }}</label>
-          <div class="custom-select-wrapper" @click="isRpSelectOpen = !isRpSelectOpen">
-            <div class="input-field select-field custom-select-display">
-              <span class="custom-select-text">
-                {{ editServerForm.acceptTextures === 1 ? t('instance.rp_enabled') : (editServerForm.acceptTextures === 0 ? t('instance.rp_disabled') : t('instance.rp_prompt')) }}
-              </span>
-              <svg class="select-caret" :class="{ 'is-open': isRpSelectOpen }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </div>
-            
-            <Transition name="dropdown">
-              <div v-if="isRpSelectOpen" class="custom-select-dropdown">
-                <div class="custom-option" :class="{ 'is-selected': editServerForm.acceptTextures === 1 }" @click.stop="editServerForm.acceptTextures = 1; isRpSelectOpen = false">
-                  {{ t('instance.rp_enabled') }}
-                </div>
-                <div class="custom-option" :class="{ 'is-selected': editServerForm.acceptTextures === null }" @click.stop="editServerForm.acceptTextures = null; isRpSelectOpen = false">
-                  {{ t('instance.rp_prompt') }}
-                </div>
-                <div class="custom-option" :class="{ 'is-selected': editServerForm.acceptTextures === 0 }" @click.stop="editServerForm.acceptTextures = 0; isRpSelectOpen = false">
-                  {{ t('instance.rp_disabled') }}
-                </div>
-              </div>
-            </Transition>
-          </div>
-        </div>
-        
-        <div class="modal-actions">
-          <button class="btn btn-secondary" @click="closeEditModal">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            {{ t('instance.cancel') }}
-          </button>
-          <button class="btn btn-success" @click="saveServer">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-            {{ isAddingServer ? t('instance.add_server') : t('instance.save') }}
-          </button>
-        </div>
-      </div>
-      </div>
-    </Transition>
+    <EditServerModal 
+      :is-open="isEditModalOpen"
+      :is-adding-server="isAddingServer"
+      v-model:edit-server-form="editServerForm"
+      @close="closeEditModal"
+      @save="saveServer"
+    />
 
-    <Transition name="modal">
-      <div v-if="isDeleteModalOpen" class="modal-backdrop" @click="closeDeleteModal">
-        <div class="modal-content" @click.stop>
-          <div class="modal-header">
-            <h2 class="modal-title">{{ t('instance.remove_server_title') || 'Remove Server' }}</h2>
-            <div class="close-control" @click="closeDeleteModal">
-              <svg width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 3L9 9M9 3L3 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-          </div>
-          <p class="modal-text" style="color: var(--text-muted); font-size: 0.95rem;">{{ t('instance.remove_server_desc') || 'Are you sure you want to remove this server? This action cannot be undone.' }}</p>
-          <div class="modal-actions">
-            <button class="btn btn-secondary" @click="closeDeleteModal">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              {{ t('instance.cancel') }}
-            </button>
-            <button class="btn btn-danger" @click="confirmRemoveServer">
-              <IconTrash class="dropdown-icon" />
-              {{ t('instance.remove_server') }}
-            </button>
-          </div>
-        </div>
-      </div>
-    </Transition>
+    <DeleteServerModal 
+      :is-open="isDeleteModalOpen"
+      @close="closeDeleteModal"
+      @confirm="confirmRemoveServer"
+    />
 
     <Transition name="modal">
       <LoginRequiredModal 
@@ -1034,12 +960,12 @@ const formatLastPlayed = (timestamp: number) => {
 }
 
 .item-danger {
-  color: #ff6b6b;
+  color: var(--danger);
 }
 
 .item-danger:hover {
-  background-color: #ff6b6b !important;
-  color: #000 !important;
+  background-color: var(--danger) !important;
+  color: var(--color-black) !important;
 }
 
 .world-title-row {
@@ -1329,224 +1255,5 @@ const formatLastPlayed = (timestamp: number) => {
   gap: 20px;
 }
 
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
 
-.modal-title {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 0;
-}
-
-.close-control {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s, transform 0.2s;
-}
-
-.close-control:hover {
-  background-color: var(--danger);
-  color: var(--color-white);
-}
-
-.close-control:active {
-  transform: scale(0.85);
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.form-group label {
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--text-main);
-}
-
-.input-field {
-  width: 100%;
-  height: 38px;
-  background-color: var(--surface-2);
-  border: 1px solid transparent;
-  border-radius: 12px;
-  padding: 0 16px;
-  color: var(--text-main);
-  font-family: inherit;
-  font-size: 1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  outline: none;
-}
-
-.input-field::placeholder {
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.input-field:focus {
-  background-color: var(--surface-2);
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent);
-}
-
-.select-field {
-  appearance: none;
-}
-
-.custom-select-wrapper {
-  position: relative;
-  width: 100%;
-}
-.custom-select-display {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  user-select: none;
-}
-.custom-select-text {
-  font-weight: 500;
-}
-.select-caret {
-  width: 16px;
-  height: 16px;
-  color: var(--text-muted);
-  transition: transform 0.2s ease;
-}
-.select-caret.is-open {
-  transform: rotate(180deg);
-}
-.custom-select-dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  width: 100%;
-  background-color: var(--bg-shell);
-  border: 1px solid var(--border-line);
-  border-radius: 12px;
-  padding: 0;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-.custom-option {
-  padding: 10px 12px;
-  border-radius: 0;
-  cursor: pointer;
-  color: var(--text-muted);
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-.custom-option:first-child {
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-}
-.custom-option:last-child {
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
-}
-.custom-option:hover {
-  background-color: var(--surface-hover);
-  color: var(--text-main);
-}
-.custom-option.is-selected {
-  background-color: color-mix(in srgb, var(--accent) 15%, transparent);
-  color: var(--accent);
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 10px;
-}
-
-.btn {
-  height: 36px;
-  padding: 0 16px;
-  background-color: var(--surface-1);
-  border: 4px solid var(--border-line);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 1rem;
-  color: var(--text-muted);
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  font-family: inherit;
-  gap: 6px;
-}
-
-.btn:hover {
-  background-color: var(--surface-hover);
-}
-
-.btn:active {
-  transform: scale(0.92);
-}
-
-.btn-primary {
-  border-color: var(--accent);
-  color: var(--text-main);
-  background-color: color-mix(in srgb, var(--accent) 15%, transparent);
-}
-
-.btn-primary:hover {
-  background-color: color-mix(in srgb, var(--accent) 25%, transparent);
-}
-
-.btn-success {
-  border-color: #10B981;
-  color: #fff;
-  background-color: color-mix(in srgb, #10B981 15%, transparent);
-}
-
-.btn-success:hover {
-  background-color: color-mix(in srgb, #10B981 35%, transparent);
-}
-
-.btn-danger {
-  border-color: var(--danger);
-  color: var(--danger);
-  background-color: color-mix(in srgb, var(--danger) 15%, transparent);
-}
-
-.btn-danger:hover {
-  background-color: color-mix(in srgb, var(--danger) 35%, transparent);
-  color: var(--color-white);
-}
-
-/* Modal Transition */
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.2s ease;
-}
-.modal-enter-from,
-.modal-leave-to {
-  opacity: 0;
-}
-.modal-enter-active .modal-content,
-.modal-leave-active .modal-content {
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.modal-enter-from .modal-content,
-.modal-leave-to .modal-content {
-  transform: scale(0.95);
-}
 </style>

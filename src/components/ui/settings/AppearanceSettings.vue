@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { currentTheme, setTheme, t } from '../../../composables/useI18n';
 </script>
 
@@ -8,7 +8,7 @@ import { currentTheme, setTheme, t } from '../../../composables/useI18n';
     <p class="subtitle">{{ t('appearance.subtitle') }}</p>
     
     <div class="theme-grid">
-      <!-- Dark Theme Tile -->
+
       <div 
         class="theme-tile" 
         :class="{ active: currentTheme === 'dark' }"
