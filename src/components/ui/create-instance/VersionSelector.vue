@@ -33,7 +33,7 @@ const isUserTyping = ref(false);
 const isDropdownOpen = ref(false);
 const dropdownDirection = ref('down');
 const dropdownListRef = ref<HTMLElement | null>(null);
-const containerRef = ref<HTMLElement | null>(null);
+
 
 const filteredVersions = computed(() => {
   if (!isUserTyping.value) {

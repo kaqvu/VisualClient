@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { t } from '../../../composables/useI18n';
+import { t } from '../../composables/useI18n';
 import IconTrash from '../icons/IconTrash.vue';
 
 const props = defineProps<{

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { t } from '../../../composables/useI18n';
+import { t } from '../../composables/useI18n';
 
 const props = defineProps<{
   isOpen: boolean;

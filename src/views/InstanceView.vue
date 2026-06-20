@@ -28,7 +28,7 @@ const instance = computed(() => {
 });
 
 const activeTab = ref(0);
-const servers = ref<{name: string, ip: string, accept_textures?: number, motdHtml?: string, loadingMotd?: boolean, online?: boolean}[]>([]);
+const servers = ref<{name: string, ip: string, accept_textures?: number, motdHtml?: string, loadingMotd?: boolean, online?: boolean, icon_base64?: string}[]>([]);
 const worlds = ref<{folder_name: string, name: string, last_played: number, icon_base64?: string}[]>([]);
 
 const activeMenu = ref<string | null>(null);
@@ -86,7 +86,7 @@ const confirmRemoveServer = async () => {
 };
 
 const isEditModalOpen = ref(false);
-const isRpSelectOpen = ref(false);
+
 const isAddingServer = ref(false);
 const editServerForm = ref({
   originalIp: '',
@@ -137,7 +137,7 @@ const saveServer = async () => {
       servers.value.push({
         name: finalName,
         ip: editServerForm.value.ip,
-        accept_textures: editServerForm.value.acceptTextures,
+        accept_textures: editServerForm.value.acceptTextures ?? undefined,
         loadingMotd: true,
         online: false,
         motdHtml: ''
@@ -159,7 +159,7 @@ const saveServer = async () => {
       if (idx !== -1) {
         servers.value[idx].name = finalName;
         servers.value[idx].ip = editServerForm.value.ip;
-        servers.value[idx].accept_textures = editServerForm.value.acceptTextures;
+        servers.value[idx].accept_textures = editServerForm.value.acceptTextures ?? undefined;
         servers.value[idx].loadingMotd = true;
         fetchMotd(idx);
       }
@@ -220,7 +220,7 @@ const fetchMotd = async (index: number) => {
           if (servers.value[index].icon_base64 !== cleanBase64) {
             servers.value[index].icon_base64 = cleanBase64;
             invoke('update_server_icon', { 
-              id: instance.value.id, 
+              id: instance.value!.id, 
               ipToMatch: server.ip, 
               iconBase64: data.icon 
             }).catch(console.error);
@@ -249,7 +249,7 @@ const handleIconError = (e: Event) => {
 };
 
 const refreshServers = () => {
-  servers.value.forEach((s, idx) => fetchMotd(idx));
+  servers.value.forEach((_, idx) => fetchMotd(idx));
 };
 
 let pollInterval: number | null = null;
