@@ -391,6 +391,8 @@ pub async fn launch_instance(
     id: String,
     username: String,
     launching_text: String,
+    server_ip: Option<String>,
+    world_folder: Option<String>,
 ) -> Result<(), String> {
     let _ = app.emit("download_progress", ProgressPayload {
         task: launching_text,
@@ -416,7 +418,31 @@ pub async fn launch_instance(
     cmd.arg("-Xmx2G");
     cmd.arg("-XX:+UnlockExperimentalVMOptions");
     cmd.arg("-XX:+UseG1GC");
-    cmd.arg("--enable-native-access=ALL-UNNAMED");
+
+    let natives_dir = mc_dir.join("versions").join(&instance.version).join("natives");
+    cmd.arg(format!("-Djava.library.path={}", natives_dir.to_string_lossy()));
+
+    let is_modern_version = {
+        let parts: Vec<&str> = instance.version.split('.').collect();
+        if parts.len() >= 2 {
+            if let (Ok(major), Ok(minor)) = (parts[0].parse::<u32>(), parts[1].parse::<u32>()) {
+                major > 1 || (major == 1 && minor >= 18)
+            } else { false }
+        } else { false }
+    };
+
+    let is_quick_play_supported = {
+        let parts: Vec<&str> = instance.version.split('.').collect();
+        if parts.len() >= 2 {
+            if let (Ok(major), Ok(minor)) = (parts[0].parse::<u32>(), parts[1].parse::<u32>()) {
+                major > 1 || (major == 1 && minor >= 20)
+            } else { false }
+        } else { false }
+    };
+
+    if is_modern_version {
+        cmd.arg("--enable-native-access=ALL-UNNAMED");
+    }
 
     let launch_info = crate::minecraft::get_launch_info(&instance.version, &instance.loader, &mc_dir)?;
     
@@ -477,6 +503,28 @@ pub async fn launch_instance(
         cmd.arg("--accessToken").arg(&token_str);
         cmd.arg("--userType").arg(user_type_str);
         cmd.arg("--versionType").arg("release");
+    }
+
+    if let Some(ip) = server_ip {
+        if is_quick_play_supported {
+            cmd.arg("--quickPlayMultiplayer").arg(&ip);
+        } else {
+            if ip.contains(':') {
+                let parts: Vec<&str> = ip.split(':').collect();
+                if parts.len() == 2 {
+                    cmd.arg("--server").arg(parts[0]);
+                    cmd.arg("--port").arg(parts[1]);
+                } else {
+                    cmd.arg("--server").arg(&ip);
+                }
+            } else {
+                cmd.arg("--server").arg(&ip);
+            }
+        }
+    } else if let Some(world) = world_folder {
+        if is_quick_play_supported {
+            cmd.arg("--quickPlaySingleplayer").arg(&world);
+        }
     }
 
     #[cfg(target_os = "windows")]

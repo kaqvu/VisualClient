@@ -31,7 +31,12 @@ pub fn run() {
             auth::start_microsoft_login,
             auth::cancel_microsoft_login,
             instances_data::get_instance_servers,
-            instances_data::get_instance_worlds
+            instances_data::add_instance_server,
+            instances_data::update_instance_server,
+            instances_data::remove_instance_server,
+            instances_data::update_server_icon,
+            instances_data::get_instance_worlds,
+            instances_data::ping_server
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

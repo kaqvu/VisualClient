@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { t } from '../composables/useI18n';
 
@@ -16,24 +16,25 @@ const modpacks = ref<ModrinthProject[]>([]);
 const isLoadingShaders = ref(true);
 const isLoadingMods = ref(true);
 const isLoadingModpacks = ref(true);
+const isOffline = ref(false);
 
 onMounted(() => {
   fetch('https://api.modrinth.com/v2/search?limit=5&facets=[[%22project_type:shader%22]]')
     .then(res => res.json())
     .then(data => { shaders.value = data.hits || []; })
-    .catch(error => console.error('Failed to fetch shaders', error))
+    .catch(error => { console.error('Failed to fetch shaders', error); isOffline.value = true; })
     .finally(() => { isLoadingShaders.value = false; });
     
   fetch('https://api.modrinth.com/v2/search?limit=5&facets=[[%22project_type:mod%22]]')
     .then(res => res.json())
     .then(data => { mods.value = data.hits || []; })
-    .catch(error => console.error('Failed to fetch mods', error))
+    .catch(error => { console.error('Failed to fetch mods', error); isOffline.value = true; })
     .finally(() => { isLoadingMods.value = false; });
     
   fetch('https://api.modrinth.com/v2/search?limit=5&facets=[[%22project_type:modpack%22]]')
     .then(res => res.json())
     .then(data => { modpacks.value = data.hits || []; })
-    .catch(error => console.error('Failed to fetch modpacks', error))
+    .catch(error => { console.error('Failed to fetch modpacks', error); isOffline.value = true; })
     .finally(() => { isLoadingModpacks.value = false; });
 });
 </script>
@@ -42,8 +43,23 @@ onMounted(() => {
   <div class="home-view">
     <h1 class="welcome-title">{{ t('home.welcome') }}</h1>
     
-    <div class="discover-section">
-      <h2 class="section-title">{{ t('home.discover_shaders') }}</h2>
+    <div v-if="isOffline" class="offline-state">
+      <svg class="offline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="1" y1="1" x2="23" y2="23"></line>
+        <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+        <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+        <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+        <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+        <line x1="12" y1="20" x2="12.01" y2="20"></line>
+      </svg>
+      <h2>{{ t('instance.cant_connect') || 'No connection' }}</h2>
+      <p>{{ t('home.offline_desc') }}</p>
+    </div>
+    
+    <div v-else class="discover-content">
+      <div class="discover-section">
+        <h2 class="section-title">{{ t('home.discover_shaders') }}</h2>
       
       <div v-if="isLoadingShaders" class="cards-grid">
         <div class="skeleton-card" v-for="i in 5" :key="'s-'+i"></div>
@@ -109,6 +125,7 @@ onMounted(() => {
           </div>
         </div>
       </div>
+      </div>
     </div>
   </div>
 </template>
@@ -119,6 +136,27 @@ onMounted(() => {
   flex-direction: column;
   padding: 0;
   padding-bottom: 32px;
+}
+
+.offline-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 64px;
+  color: var(--text-muted);
+}
+
+.offline-icon {
+  width: 64px;
+  height: 64px;
+  stroke: var(--surface-hover);
+}
+
+.offline-state h2 {
+  color: var(--text-main);
+  margin: 0;
 }
 
 .welcome-title {

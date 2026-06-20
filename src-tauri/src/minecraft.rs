@@ -335,7 +335,16 @@ pub fn get_launch_info(version: &str, loader: &str, mc_dir: &PathBuf) -> Result<
                   else if cfg!(target_os = "macos") { "osx" }
                   else { "linux" };
 
+    let natives_classifier = match os_name {
+        "windows" => "natives-windows",
+        "osx" => "natives-macos",
+        "linux" => "natives-linux",
+        _ => "",
+    };
+
     let mut cp_entries = Vec::new();
+    let natives_dir = mc_dir.join("versions").join(version).join("natives");
+    let _ = fs::create_dir_all(&natives_dir);
 
     for lib in version_json.libraries {
         let mut allowed = true;
@@ -358,6 +367,30 @@ pub fn get_launch_info(version: &str, loader: &str, mc_dir: &PathBuf) -> Result<
         if let Some(artifact) = lib.downloads.artifact {
             let path = mc_dir.join("libraries").join(&artifact.path);
             cp_entries.push(path.to_string_lossy().into_owned());
+        }
+
+        if let Some(classifiers) = lib.downloads.classifiers {
+            if let Some(artifact) = classifiers.get(natives_classifier) {
+                let path = mc_dir.join("libraries").join(&artifact.path);
+                if path.exists() {
+                    if let Ok(file) = std::fs::File::open(&path) {
+                        if let Ok(mut archive) = zip::ZipArchive::new(file) {
+                            for i in 0..archive.len() {
+                                if let Ok(mut file) = archive.by_index(i) {
+                                    if !file.is_dir() && !file.name().starts_with("META-INF") {
+                                        if let Some(name) = std::path::Path::new(file.name()).file_name() {
+                                            let outpath = natives_dir.join(name);
+                                            if let Ok(mut outfile) = std::fs::File::create(&outpath) {
+                                                let _ = std::io::copy(&mut file, &mut outfile);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

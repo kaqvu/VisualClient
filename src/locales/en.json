@@ -25,7 +25,8 @@
     "welcome": "Welcome to Visual Client!",
     "discover_shaders": "Discover shaders",
     "discover_mods": "Discover mods",
-    "discover_modpacks": "Discover a modpack"
+    "discover_modpacks": "Discover a modpack",
+    "offline_desc": "Modrinth discovery is disabled because you are offline."
   },
   "instance_settings": {
     "title": "Settings",
@@ -68,7 +69,32 @@
     "login_required": "You must log in before playing!",
     "login_modal_title": "Sign in to Minecraft",
     "login_modal_text": "To play this instance, you must select account.",
-    "login_modal_btn": "Select account"
+    "login_modal_btn": "Select account",
+    "cant_connect": "Can't connect to server",
+    "refresh": "Refresh",
+    "loading": "Loading",
+    "played_just_now": "Played just now",
+    "played_minutes_ago": "Played {time} minutes ago",
+    "played_hours_ago": "Played {time} hours ago",
+    "played_days_ago": "Played {time} days ago",
+    "played_months_ago": "Played {time} months ago",
+    "played_years_ago": "Played {time} years ago",
+    "copy_address": "Copy address",
+    "edit_server": "Edit",
+    "remove_server": "Remove",
+    "remove_server_title": "Remove Server",
+    "remove_server_desc": "Are you sure you want to remove this server? This action cannot be undone.",
+    "add_server_title": "Add a server",
+    "edit_server_title": "Edit Server",
+    "server_name": "Server name",
+    "server_address": "Address",
+    "server_resource_packs": "Resource packs",
+    "rp_enabled": "Enabled",
+    "rp_disabled": "Disabled",
+    "rp_prompt": "Prompt",
+    "save": "Save changes",
+    "cancel": "Cancel",
+    "add_server": "Add server"
   },
   "accounts": {
     "title": "Accounts",

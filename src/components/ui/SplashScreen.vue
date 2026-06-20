@@ -51,7 +51,10 @@ onMounted(() => {
       <div class="splash-content">
         <div class="splash-logo-row">
           <img src="/icon.svg" onerror="this.src='/vite.svg'" alt="VisualClient" class="splash-icon" />
-          <span class="splash-title">visual <span class="text-accent">client</span></span>
+          <div class="splash-title">
+            <span>visual</span>
+            <span class="text-accent">client</span>
+          </div>
         </div>
         
         <div class="progress-container">
@@ -107,6 +110,8 @@ onMounted(() => {
 }
 
 .splash-title {
+  display: flex;
+  gap: 10px;
   font-size: 2.5rem;
   font-weight: 600;
   color: var(--text-main);

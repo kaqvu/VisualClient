@@ -64,7 +64,7 @@ const handleCreateAccount = async (payload: any) => {
       >
         <div class="account-info-left">
           <div class="account-avatar">
-            <img :src="`https://mc-heads.net/head/${acc.username}`" :alt="acc.username" @error="(e) => (e.target as HTMLImageElement).src='https://mc-heads.net/head/MHF_Steve'" class="avatar-img" />
+            <img :src="`https://mc-heads.net/head/${acc.username}`" :alt="acc.username" @error="(e) => (e.target as HTMLImageElement).src='/steve.png'" class="avatar-img pixelated" />
           </div>
           <div class="account-name-group">
             <span class="account-type">{{ acc.type || 'Offline' }}</span>
