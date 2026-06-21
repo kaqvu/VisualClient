@@ -74,7 +74,7 @@ function applyMainColor(color: string) {
   document.documentElement.style.setProperty('--accent', color);
 }
 
-export function t(key: string, params?: Record<string, string>): string {
+export function t(key: string, params?: Record<string, string | number>): string {
   const keys = key.split('.');
   let value = translations[currentLanguage.value];
   for (const k of keys) {
@@ -83,7 +83,7 @@ export function t(key: string, params?: Record<string, string>): string {
   }
   if (typeof value === 'string' && params) {
     for (const [k, v] of Object.entries(params)) {
-      value = value.replace(`{${k}}`, v);
+      value = value.replace(`{${k}}`, String(v));
     }
   }
   return value || key;

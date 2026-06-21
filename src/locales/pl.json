@@ -54,6 +54,8 @@
   "create_instance": {
     "title": "Utwórz nową instancję",
     "name": "Nazwa",
+    "folder_name": "Nazwa folderu",
+    "min_length": "Wymagane min. {count} znaki",
     "loader": "Loader",
     "version": "Wersja",
     "no_versions": "Ładowanie wersji...",

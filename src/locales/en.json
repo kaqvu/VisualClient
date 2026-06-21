@@ -54,6 +54,8 @@
   "create_instance": {
     "title": "Create new instance",
     "name": "Name",
+    "folder_name": "Folder name",
+    "min_length": "Minimum {count} characters",
     "loader": "Loader",
     "version": "Version",
     "no_versions": "Loading versions...",
