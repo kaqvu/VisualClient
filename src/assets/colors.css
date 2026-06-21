@@ -5,32 +5,11 @@
   --text-main: #f0f0f0;
   --text-muted: #9ca3af;
   --accent: #1ad96a;
-  --accent-hover: #16b859;
-  --surface-1: rgba(255, 255, 255, 0.03);
-  --surface-hover: rgba(255, 255, 255, 0.06);
-  --surface-active: rgba(255, 255, 255, 0.09);
-  
-
-  --surface-2: #35363c;
-  --surface-3: #2a2b30;
-  --surface-dark: #1f2125;
-  --surface-darker: #191b1f;
-
+  --success: #1ad96a;
 
   --color-white: #ffffff;
   --color-black: #000000;
   --text-secondary: #b0bac4;
 
-
   --danger: #ed4245;
-  --danger-hover: #ff5a79;
-  --danger-active: #e54c69;
-
-  --mc-green: #55ff55;
-  --mc-aqua: #55ffff;
-
-
-  --backdrop-dark: rgba(0, 0, 0, 0.4);
-  --overlay-light: rgba(0, 0, 0, 0.1);
-  --overlay-medium: rgba(0, 0, 0, 0.2);
 }

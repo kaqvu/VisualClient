@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 pub struct Settings {
     pub language: String,
     pub theme: String,
+    pub main_color: String,
 }
 
 impl Default for Settings {
@@ -11,6 +12,7 @@ impl Default for Settings {
         Self {
             language: "en".to_string(),
             theme: "dark".to_string(),
+            main_color: "#1ad96a".to_string(),
         }
     }
 }

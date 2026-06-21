@@ -17,6 +17,8 @@
     "pl_translated": "Polski"
   },
   "appearance": {
+    "main_color_title": "Kolor wiodący",
+    "main_color_subtitle": "Wybierz główny kolor akcentu",
     "title": "Motyw",
     "subtitle": "Wybierz preferowany motyw dla Visual Client.",
     "dark": "Ciemny"

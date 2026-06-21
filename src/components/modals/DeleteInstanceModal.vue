@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { t } from '../../composables/useI18n';
 import IconTrash from '../icons/IconTrash.vue';
 
@@ -43,7 +43,7 @@ const emit = defineEmits(['close', 'confirm']);
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: var(--backdrop-dark);
+  background-color: color-mix(in srgb, var(--color-black) 40%, transparent);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -128,21 +128,21 @@ const emit = defineEmits(['close', 'confirm']);
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   border: none;
 }
 
 .btn:active {
-  transform: scale(0.95);
+  transform: scale(0.85);
 }
 
 .btn-cancel {
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   color: var(--text-main);
 }
 
 .btn-cancel:hover {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
 }
 
 .btn-icon {
@@ -151,8 +151,8 @@ const emit = defineEmits(['close', 'confirm']);
 }
 
 .btn-delete {
-  background-color: var(--danger-hover);
-  color: var(--color-black);
+  background-color: rgba(237, 66, 69, 0);
+  color: var(--danger);
   border: none;
   border-radius: 12px;
   font-weight: 600;
@@ -162,6 +162,7 @@ const emit = defineEmits(['close', 'confirm']);
 }
 
 .btn-delete:hover {
-  background-color: var(--danger-active);
+  background-color: var(--danger);
+  color: var(--color-black);
 }
 </style>

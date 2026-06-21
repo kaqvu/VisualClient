@@ -204,14 +204,14 @@ const selectVersion = (v: { id: string, label: string }) => {
 .form-input {
   width: 100%;
   height: 44px;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   border: none;
   border-radius: 12px;
   padding: 0 16px;
   color: var(--text-main);
   font-family: inherit;
   font-size: 1rem;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   outline: none;
 }
 
@@ -220,7 +220,7 @@ const selectVersion = (v: { id: string, label: string }) => {
 }
 
 .form-input:focus, .form-input.open {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
   box-shadow: 0 0 0 4px var(--accent);
 }
 
@@ -249,7 +249,7 @@ const selectVersion = (v: { id: string, label: string }) => {
   border: 1px solid var(--border-line);
   border-radius: 12px;
   z-index: 100;
-  box-shadow: 0 10px 40px var(--backdrop-dark);
+  box-shadow: 0 10px 40px color-mix(in srgb, var(--color-black) 40%, transparent);
   display: flex;
   flex-direction: column;
 }
@@ -298,11 +298,11 @@ const selectVersion = (v: { id: string, label: string }) => {
 }
 
 .version-card:hover {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
 }
 
 .version-card.selected {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
   color: var(--text-main);
 }
 

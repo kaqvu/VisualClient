@@ -84,7 +84,7 @@ onMounted(async () => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: var(--backdrop-dark);
+  background-color: color-mix(in srgb, var(--color-black) 40%, transparent);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -187,15 +187,15 @@ onMounted(async () => {
   color: var(--text-muted);
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .settings-tab:active {
-  transform: scale(0.95);
+  transform: scale(0.85);
 }
 
 .settings-tab:hover {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
   color: var(--text-main);
 }
 

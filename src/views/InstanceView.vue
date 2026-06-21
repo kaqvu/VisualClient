@@ -249,7 +249,7 @@ const fetchMotd = async (index: number) => {
 
 const handleIconError = (e: Event) => {
   const target = e.target as HTMLImageElement;
-  target.src = "/server.png";
+  target.src = "/noicon.png";
 };
 
 const refreshServers = () => {
@@ -506,10 +506,8 @@ const formatLastPlayed = (timestamp: number) => {
               <div v-else class="server-motd" :class="{ 'is-loading': server.loadingMotd }" v-html="server.motdHtml"></div>
             </div>
             <div class="server-actions">
-              <button class="btn-play-server" :class="{ 'is-running': isRunning, 'is-starting': isStarting }" @click="handlePlayServer(server.ip)">
-                <IconStop v-if="isRunning || isStarting" class="play-icon-server" />
-                <IconPlay v-else class="play-icon-server" />
-                {{ isRunning ? (t('instance.stop') || 'Stop') : isStarting ? (t('instance.starting') || 'Starting...') : (t('instance.play') || 'Play') }}
+              <button class="btn-play-server" :disabled="isRunning || isStarting" @click="handlePlayServer(server.ip)">
+                <IconPlay class="play-icon-server" />
               </button>
               
               <div class="server-menu-wrapper" @click.stop>
@@ -554,7 +552,7 @@ const formatLastPlayed = (timestamp: number) => {
       <div v-else-if="activeTab === 1" class="servers-list">
         <div class="server-card" v-for="world in worlds" :key="world.folder_name">
           <img v-if="world.icon_base64" :src="`data:image/png;base64,${world.icon_base64}`" class="item-icon server-icon-img pixelated" alt="World Icon" />
-          <img v-else src="/server.png" class="item-icon server-icon-img pixelated" alt="Default World Icon" />
+          <img v-else src="/noicon.png" class="item-icon server-icon-img pixelated" alt="Default World Icon" />
           <div class="server-card-content">
             <div class="server-details">
               <div class="world-title-row">
@@ -566,10 +564,8 @@ const formatLastPlayed = (timestamp: number) => {
               <div class="server-motd is-world">{{ formatLastPlayed(world.last_played) }}</div>
             </div>
             <div class="server-actions" v-if="isWorldQuickPlaySupported">
-              <button class="btn-play-server" :class="{ 'is-running': isRunning, 'is-starting': isStarting }" @click="handlePlayWorld(world.folder_name)">
-                <IconStop v-if="isRunning || isStarting" class="play-icon-server" />
-                <IconPlay v-else class="play-icon-server" />
-                {{ isRunning ? (t('instance.stop') || 'Stop') : isStarting ? (t('instance.starting') || 'Starting...') : (t('instance.play') || 'Play') }}
+              <button class="btn-play-server" :disabled="isRunning || isStarting" @click="handlePlayWorld(world.folder_name)">
+                <IconPlay class="play-icon-server" />
               </button>
             </div>
           </div>
@@ -633,12 +629,12 @@ const formatLastPlayed = (timestamp: number) => {
 }
 
 .btn-add-server:hover {
-  background-color: color-mix(in srgb, var(--text-main) 10%, var(--surface-1));
+  background-color: color-mix(in srgb, var(--text-main) 10%, color-mix(in srgb, var(--color-white) 3%, transparent));
   color: var(--text-main);
 }
 
 .btn-add-server:active {
-  transform: scale(0.95);
+  transform: scale(0.85);
 }
 
 .add-server-icon {
@@ -665,7 +661,7 @@ const formatLastPlayed = (timestamp: number) => {
 .tabs-container {
   display: flex;
   position: relative;
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
   border-radius: 999px;
   padding: 4px;
   width: fit-content;
@@ -683,7 +679,7 @@ const formatLastPlayed = (timestamp: number) => {
   justify-content: center;
   gap: 8px;
   color: var(--text-muted);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -691,12 +687,12 @@ const formatLastPlayed = (timestamp: number) => {
 }
 
 .btn-refresh:hover {
-  background-color: color-mix(in srgb, var(--surface-2) 100%, white 8%);
+  background-color: color-mix(in srgb, color-mix(in srgb, var(--bg-shell) 85%, var(--color-white)) 100%, white 8%);
   color: var(--text-main);
 }
 
 .btn-refresh:active {
-  transform: scale(0.95);
+  transform: scale(0.85);
 }
 
 .btn-refresh svg {
@@ -729,11 +725,11 @@ const formatLastPlayed = (timestamp: number) => {
 }
 
 .tab-button:active {
-  transform: scale(0.92);
+  transform: scale(0.85);
 }
 
 .tab-button span {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-white);
   font-size: 0.9rem;
   transition: color 0.2s ease;
@@ -764,9 +760,9 @@ const formatLastPlayed = (timestamp: number) => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border: 4px solid var(--surface-2);
+  border: 4px solid color-mix(in srgb, var(--bg-shell) 85%, var(--color-white));
   border-radius: 16px;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
 }
 
 .library-icon-svg {
@@ -783,7 +779,7 @@ const formatLastPlayed = (timestamp: number) => {
 .title {
   margin: 0;
   font-size: 1.8rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-main);
 }
 
@@ -815,7 +811,7 @@ const formatLastPlayed = (timestamp: number) => {
 .btn-play {
   padding: 0 24px;
   height: 44px;
-  background-color: var(--accent);
+  background-color: var(--success);
   color: var(--color-black);
   border: none;
   border-radius: 16px;
@@ -834,11 +830,11 @@ const formatLastPlayed = (timestamp: number) => {
 }
 
 .btn-play:hover {
-  background-color: var(--accent-hover);
+  background-color: color-mix(in srgb, var(--success) 85%, var(--color-black));
 }
 
 .btn-play:active {
-  transform: scale(0.96);
+  transform: scale(0.85);
 }
 
 .btn-play.is-running {
@@ -852,55 +848,11 @@ const formatLastPlayed = (timestamp: number) => {
 }
 
 .btn-play.is-starting {
-  background-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  background-color: color-mix(in srgb, var(--success) 50%, transparent);
   color: color-mix(in srgb, var(--color-black) 70%, transparent);
   cursor: default;
 }
 
-.btn-play-server {
-  background-color: transparent;
-  color: var(--text-main);
-  border: 1px solid var(--border-line);
-  padding: 8px 16px;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: background-color 0.2s, transform 0.1s cubic-bezier(0.4, 0.0, 0.2, 1);
-  will-change: transform;
-  backface-visibility: hidden;
-  line-height: 1;
-}
-
-.btn-play-server:hover {
-  background-color: color-mix(in srgb, var(--text-main) 10%, transparent);
-}
-
-.btn-play-server:active {
-  transform: scale(0.96);
-}
-
-.btn-play-server.is-running {
-  background-color: var(--danger);
-  color: var(--color-black);
-  border-color: var(--danger);
-}
-
-.btn-play-server.is-running:hover {
-  background-color: color-mix(in srgb, var(--danger) 85%, black);
-  color: var(--color-black);
-}
-
-.btn-play-server.is-starting {
-  background-color: color-mix(in srgb, var(--accent) 50%, transparent);
-  color: var(--color-white);
-  border-color: transparent;
-  cursor: default;
-}
 
 .play-icon-server {
   width: 18px;
@@ -939,7 +891,7 @@ const formatLastPlayed = (timestamp: number) => {
 }
 
 .btn-server-menu:active {
-  transform: scale(0.95);
+  transform: scale(0.85);
 }
 
 .server-dropdown-menu {
@@ -1000,7 +952,7 @@ const formatLastPlayed = (timestamp: number) => {
 }
 
 .dropdown-item:hover {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
   color: var(--text-main);
 }
 
@@ -1022,8 +974,8 @@ const formatLastPlayed = (timestamp: number) => {
 }
 
 .item-danger:hover {
-  background-color: var(--danger) !important;
-  color: var(--color-black) !important;
+  background-color: var(--danger);
+  color: var(--color-black);
 }
 
 .world-title-row {
@@ -1040,7 +992,7 @@ const formatLastPlayed = (timestamp: number) => {
 .btn-settings {
   width: 48px;
   height: 48px;
-  background-color: var(--surface-2);
+  background-color: color-mix(in srgb, var(--bg-shell) 85%, var(--color-white));
   color: var(--text-secondary);
   border: none;
   border-radius: 50%;
@@ -1057,7 +1009,7 @@ const formatLastPlayed = (timestamp: number) => {
 }
 
 .btn-settings:hover {
-  background-color: var(--surface-3);
+  background-color: color-mix(in srgb, var(--bg-shell) 95%, var(--color-white));
 }
 
 .btn-settings:active {
@@ -1185,7 +1137,7 @@ const formatLastPlayed = (timestamp: number) => {
 .server-ip {
   font-size: 0.85rem;
   color: var(--text-muted);
-  background-color: var(--surface-2);
+  background-color: color-mix(in srgb, var(--bg-shell) 85%, var(--color-white));
   padding: 4px 10px;
   border-radius: 8px;
   font-family: monospace;
@@ -1193,38 +1145,48 @@ const formatLastPlayed = (timestamp: number) => {
 }
 
 .btn-play-server {
+  width: 38px;
   height: 38px;
-  padding: 0 20px;
-  border-radius: 12px;
-  background-color: color-mix(in srgb, var(--surface-2) 100%, white 6%);
-  color: var(--text-muted);
-  font-weight: 600;
-  font-size: 0.95rem;
-  line-height: 1;
+  padding: 0;
+  border-radius: 50%;
+  background-color: var(--success);
+  color: var(--color-black);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
   border: none;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   flex-shrink: 0;
   will-change: transform;
 }
 
-.btn-play-server:hover {
-  background-color: color-mix(in srgb, var(--surface-2) 100%, white 12%);
-  color: color-mix(in srgb, var(--text-muted) 100%, white 15%);
+.btn-play-server:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--success) 85%, var(--color-black));
 }
 
-.btn-play-server:active {
-  transform: scale(0.96);
+.btn-play-server:active:not(:disabled) {
+  transform: scale(0.85);
+}
+
+.btn-play-server:disabled {
+  background-color: color-mix(in srgb, var(--bg-shell) 85%, var(--color-white));
+  color: var(--text-muted);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.play-icon-server {
+  width: 16px;
+  height: 16px;
+  margin-left: 2px;
+  pointer-events: none;
 }
 
 .item-icon {
   width: 48px;
   height: 48px;
-  background-color: var(--surface-2);
+  background-color: color-mix(in srgb, var(--bg-shell) 85%, var(--color-white));
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -1242,15 +1204,7 @@ const formatLastPlayed = (timestamp: number) => {
   image-rendering: pixelated;
 }
 
-.server-icon {
-  color: var(--mc-green);
-  background-color: color-mix(in srgb, var(--mc-green) 10%, transparent);
-}
 
-.world-icon {
-  color: var(--mc-aqua);
-  background-color: color-mix(in srgb, var(--mc-aqua) 10%, transparent);
-}
 
 .item-info {
   display: flex;
@@ -1262,7 +1216,7 @@ const formatLastPlayed = (timestamp: number) => {
 .item-name {
   margin: 0;
   font-size: 1.05rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-main);
   white-space: nowrap;
   overflow: hidden;
@@ -1293,7 +1247,7 @@ const formatLastPlayed = (timestamp: number) => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: var(--backdrop-dark);
+  background-color: color-mix(in srgb, var(--color-black) 40%, transparent);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;

@@ -24,6 +24,7 @@ const handleNameUpdate = () => {
         v-model="instanceNameInput" 
         class="setting-input" 
         @input="handleNameUpdate"
+        maxlength="16"
       />
     </div>
 
@@ -79,7 +80,7 @@ const handleNameUpdate = () => {
 .setting-input {
   width: 100%;
   padding: 12px 16px;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   border: none;
   color: var(--text-main);
   border-radius: 8px;
@@ -90,12 +91,12 @@ const handleNameUpdate = () => {
 
 .setting-input:focus {
   outline: none;
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
 }
 
 .btn-delete {
-  background-color: var(--danger-hover);
-  color: var(--color-black);
+  background-color: rgba(237, 66, 69, 0);
+  color: var(--danger);
   border: none;
   border-radius: 12px;
   padding: 10px 24px;
@@ -105,7 +106,7 @@ const handleNameUpdate = () => {
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .btn-icon {
@@ -114,10 +115,11 @@ const handleNameUpdate = () => {
 }
 
 .btn-delete:hover {
-  background-color: var(--danger-active);
+  background-color: var(--danger);
+  color: var(--color-black);
 }
 
 .btn-delete:active {
-  transform: scale(0.95);
+  transform: scale(0.85);
 }
 </style>

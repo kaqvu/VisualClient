@@ -226,14 +226,16 @@ pub async fn create_instance(
     version: String,
     java_version: u32,
     icon_path: Option<String>,
+    folder_name: Option<String>,
 ) -> Result<(), String> {
     let vc_dir = get_dot_visualclient_dir();
-    let mut id = name.clone();
+    let base_id = folder_name.unwrap_or_else(|| name.clone());
+    let mut id = base_id.clone();
     let mut profiles_dir = vc_dir.join("profiles").join(&id);
     
     let mut i = 1;
     while profiles_dir.exists() {
-        id = format!("{} ({})", name, i);
+        id = format!("{} ({})", base_id, i);
         profiles_dir = vc_dir.join("profiles").join(&id);
         i += 1;
     }

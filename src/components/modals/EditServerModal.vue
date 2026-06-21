@@ -103,7 +103,7 @@ const setResourcePack = (val: number | null) => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: var(--backdrop-dark);
+  background-color: color-mix(in srgb, var(--color-black) 40%, transparent);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -132,7 +132,7 @@ const setResourcePack = (val: number | null) => {
 
 .modal-title {
   font-size: 1.3rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-main);
   margin-bottom: 0;
 }
@@ -173,14 +173,14 @@ const setResourcePack = (val: number | null) => {
 .input-field {
   width: 100%;
   height: 44px;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   border: none;
   border-radius: 12px;
   padding: 0 16px;
   color: var(--text-main);
   font-family: inherit;
   font-size: 1rem;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   outline: none;
 }
 
@@ -190,7 +190,7 @@ const setResourcePack = (val: number | null) => {
 }
 
 .input-field:focus {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
   box-shadow: 0 0 0 4px var(--accent);
 }
 
@@ -198,7 +198,7 @@ const setResourcePack = (val: number | null) => {
   position: relative;
   width: 100%;
   height: 44px;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   border: none;
   border-radius: 12px;
   display: flex;
@@ -208,15 +208,15 @@ const setResourcePack = (val: number | null) => {
   cursor: pointer;
   color: var(--text-main);
   font-size: 1rem;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .custom-dropdown:hover {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
 }
 
 .custom-dropdown:focus, .custom-dropdown:active, .custom-dropdown.active {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
 }
 
 .custom-dropdown-value {
@@ -239,7 +239,7 @@ const setResourcePack = (val: number | null) => {
   top: calc(100% + 8px);
   left: 0;
   width: 100%;
-  background-color: var(--surface-3);
+  background-color: color-mix(in srgb, var(--bg-shell) 95%, var(--color-white));
   border: 1px solid var(--border-line);
   border-radius: 12px;
   box-shadow: 0 8px 24px color-mix(in srgb, var(--color-black) 40%, transparent);
@@ -268,7 +268,7 @@ const setResourcePack = (val: number | null) => {
 }
 
 .custom-dropdown-item:hover {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
   color: var(--text-main);
 }
 
@@ -279,7 +279,7 @@ const setResourcePack = (val: number | null) => {
 }
 
 .custom-dropdown-item.selected:hover {
-  background-color: var(--accent-hover);
+  background-color: color-mix(in srgb, var(--accent) 85%, var(--color-black));
 }
 
 .modal-actions {
@@ -292,7 +292,7 @@ const setResourcePack = (val: number | null) => {
 .modal-btn {
   height: 36px;
   padding: 0 16px;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   border: 4px solid var(--border-line);
   border-radius: 12px;
   display: flex;
@@ -302,17 +302,17 @@ const setResourcePack = (val: number | null) => {
   font-weight: 600;
   font-size: 1rem;
   color: var(--text-muted);
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   font-family: inherit;
   outline: none;
 }
 
 .modal-btn:hover:not(:disabled) {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
 }
 
 .modal-btn:active:not(:disabled) {
-  transform: scale(0.92);
+  transform: scale(0.85);
 }
 
 .modal-btn.primary {
@@ -349,6 +349,6 @@ const setResourcePack = (val: number | null) => {
 }
 .modal-enter-from .modal-content,
 .modal-leave-to .modal-content {
-  transform: scale(0.95);
+  transform: scale(0.85);
 }
 </style>

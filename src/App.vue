@@ -120,7 +120,7 @@ onMounted(() => {
 
 .modal-enter-from :deep(.modal-container),
 .modal-leave-to :deep(.modal-container) {
-  transform: scale(0.95);
+  transform: scale(0.85);
 }
 
 .category-loader {

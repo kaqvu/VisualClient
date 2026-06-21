@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { ref, computed } from 'vue';
 
 const emit = defineEmits(['close', 'create']);
@@ -60,7 +60,7 @@ const handleCreate = () => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: var(--backdrop-dark);
+  background-color: color-mix(in srgb, var(--color-black) 40%, transparent);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -136,7 +136,7 @@ const handleCreate = () => {
 .nickname-input {
   width: 100%;
   height: 48px;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   border: 1px solid var(--border-line);
   border-radius: 12px;
   padding: 0 16px;
@@ -172,15 +172,15 @@ const handleCreate = () => {
   font-size: 1rem;
   -webkit-font-smoothing: antialiased;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .btn-add:not(:disabled):hover {
-  background-color: var(--accent-hover);
+  background-color: color-mix(in srgb, var(--accent) 85%, var(--color-black));
 }
 
 .btn-add:not(:disabled):active {
-  transform: scale(0.95);
+  transform: scale(0.85);
 }
 
 .btn-add:disabled {

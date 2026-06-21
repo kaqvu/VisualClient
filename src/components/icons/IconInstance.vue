@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <svg 
     :width="size" 
     :height="size" 
@@ -38,7 +38,7 @@ defineProps({
   },
   bgColor: {
     type: String,
-    default: 'var(--surface-darker)'
+    default: 'color-mix(in srgb, var(--bg-shell) 75%, var(--color-black))'
   },
   iconScale: {
     type: Number,

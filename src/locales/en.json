@@ -17,6 +17,8 @@
     "pl_translated": "Polish"
   },
   "appearance": {
+    "main_color_title": "Main Color",
+    "main_color_subtitle": "Choose your primary accent color",
     "title": "Color theme",
     "subtitle": "Select your preferred color theme for Visual Client.",
     "dark": "Dark"

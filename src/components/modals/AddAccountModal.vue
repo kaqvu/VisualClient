@@ -156,7 +156,7 @@ const handleMicrosoftLogin = async () => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: var(--backdrop-dark);
+  background-color: color-mix(in srgb, var(--color-black) 40%, transparent);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -280,20 +280,20 @@ const handleMicrosoftLogin = async () => {
   align-items: center;
   gap: 16px;
   padding: 20px;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   border: 1px solid var(--border-line);
   border-radius: 16px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .account-type-card:not(.disabled):hover {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
   border-color: var(--text-muted);
 }
 
 .account-type-card:not(.disabled):active {
-  transform: scale(0.98);
+  transform: scale(0.85);
 }
 
 .account-type-card.disabled {
@@ -354,7 +354,7 @@ const handleMicrosoftLogin = async () => {
 .nickname-input {
   width: 100%;
   height: 48px;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   border: none;
   border-radius: 12px;
   padding: 0 16px;
@@ -362,11 +362,11 @@ const handleMicrosoftLogin = async () => {
   font-size: 1.05rem;
   font-family: inherit;
   outline: none;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .nickname-input:focus {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
   box-shadow: 0 0 0 4px var(--accent);
 }
 
@@ -390,15 +390,15 @@ const handleMicrosoftLogin = async () => {
   font-size: 1rem;
   -webkit-font-smoothing: antialiased;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .btn-add:not(:disabled):hover {
-  background-color: var(--accent-hover);
+  background-color: color-mix(in srgb, var(--accent) 85%, var(--color-black));
 }
 
 .btn-add:not(:disabled):active {
-  transform: scale(0.95);
+  transform: scale(0.85);
 }
 
 .btn-add:disabled {
@@ -421,7 +421,7 @@ const handleMicrosoftLogin = async () => {
 .spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid var(--surface-hover);
+  border: 3px solid color-mix(in srgb, var(--color-white) 6%, transparent);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -441,7 +441,7 @@ const handleMicrosoftLogin = async () => {
 
 .error-title {
   color: var(--danger);
-  font-weight: bold;
+  font-weight: 600;
   font-size: 1.2rem;
 }
 

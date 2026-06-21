@@ -40,7 +40,7 @@ const handleAddAccountClick = () => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: var(--backdrop-dark);
+  background-color: color-mix(in srgb, var(--color-black) 40%, transparent);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -126,10 +126,10 @@ const handleAddAccountClick = () => {
 }
 
 .btn-add-account:hover {
-  background-color: var(--accent-hover);
+  background-color: color-mix(in srgb, var(--accent) 85%, var(--color-black));
 }
 
 .btn-add-account:active {
-  transform: scale(0.96);
+  transform: scale(0.85);
 }
 </style>

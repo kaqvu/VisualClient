@@ -1,10 +1,34 @@
 <script setup lang="ts">
-import { currentTheme, setTheme, t } from '../../../composables/useI18n';
+import { currentTheme, setTheme, currentMainColor, setMainColor, t } from '../../../composables/useI18n';
+
+const colors = [
+  { id: 'green', value: '#1ad96a' },
+  { id: 'blurple', value: '#5865F2' },
+  { id: 'red', value: '#ed4245' },
+  { id: 'gold', value: '#fee75c' },
+  { id: 'cyan', value: '#00e5ff' },
+  { id: 'pink', value: '#eb459e' }
+];
 </script>
 
 <template>
   <div class="settings-page">
-    <h2>{{ t('appearance.title') }}</h2>
+    <h2 class="section-title">{{ t('appearance.main_color_title') }}</h2>
+    <p class="subtitle">{{ t('appearance.main_color_subtitle') }}</p>
+
+    <div class="color-grid">
+      <div 
+        v-for="color in colors" 
+        :key="color.id"
+        class="color-circle"
+        :style="{ backgroundColor: color.value }"
+        :class="{ active: currentMainColor.toLowerCase() === color.value.toLowerCase() }"
+        @click="setMainColor(color.value)"
+      >
+      </div>
+    </div>
+
+    <h2 class="section-title mt-8">{{ t('appearance.title') }}</h2>
     <p class="subtitle">{{ t('appearance.subtitle') }}</p>
     
     <div class="theme-grid">
@@ -40,11 +64,50 @@ import { currentTheme, setTheme, t } from '../../../composables/useI18n';
 </template>
 
 <style scoped>
+.section-title {
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.mt-8 {
+  margin-top: 32px;
+}
+
 .subtitle {
   color: var(--text-muted);
   font-size: 0.95rem;
   margin-top: -4px;
   margin-bottom: 24px;
+}
+
+.color-grid {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.color-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+}
+
+.color-circle:hover {
+  transform: scale(1.1);
+}
+
+.color-circle:active {
+  transform: scale(0.9);
+}
+
+.color-circle.active {
+  box-shadow: 0 0 0 3px var(--bg-content), 0 0 0 5px var(--accent);
 }
 
 .theme-grid {
@@ -65,7 +128,7 @@ import { currentTheme, setTheme, t } from '../../../composables/useI18n';
 }
 
 .theme-tile:active {
-  transform: scale(0.96);
+  transform: scale(0.85);
 }
 
 .theme-preview {
@@ -83,7 +146,7 @@ import { currentTheme, setTheme, t } from '../../../composables/useI18n';
   display: flex;
   align-items: center;
   gap: 16px;
-  box-shadow: 0 4px 12px var(--overlay-light);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-black) 10%, transparent);
 }
 
 .mock-square {
@@ -135,16 +198,16 @@ import { currentTheme, setTheme, t } from '../../../composables/useI18n';
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   transition: background-color 0.2s;
 }
 
 .theme-tile:hover .theme-footer {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
 }
 
 .theme-tile.active .theme-footer {
-  background-color: var(--surface-active);
+  background-color: color-mix(in srgb, var(--color-white) 9%, transparent);
 }
 
 .footer-left {

@@ -151,7 +151,7 @@ onMounted(() => {
 .offline-icon {
   width: 64px;
   height: 64px;
-  stroke: var(--surface-hover);
+  stroke: color-mix(in srgb, var(--color-white) 6%, transparent);
 }
 
 .offline-state h2 {
@@ -186,7 +186,7 @@ onMounted(() => {
 
 .skeleton-card {
   height: 280px;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   border-radius: 12px;
   animation: pulse 1.5s infinite ease-in-out;
 }
@@ -224,15 +224,15 @@ onMounted(() => {
 }
 
 .card:hover {
-  background-color: var(--surface-hover);
-  box-shadow: 0 8px 24px var(--overlay-medium);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-black) 20%, transparent);
 }
 
 .card-top {
   height: 140px;
   width: 100%;
   overflow: hidden;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
 }
 
 .card-bg {
@@ -265,7 +265,7 @@ onMounted(() => {
   height: 36px;
   border-radius: 10px;
   object-fit: cover;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
 }
 
 .card-title {

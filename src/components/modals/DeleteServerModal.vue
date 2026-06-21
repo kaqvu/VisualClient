@@ -44,7 +44,7 @@ const emit = defineEmits(['close', 'confirm']);
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: var(--backdrop-dark);
+  background-color: color-mix(in srgb, var(--color-black) 40%, transparent);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -73,7 +73,7 @@ const emit = defineEmits(['close', 'confirm']);
 
 .modal-title {
   font-size: 1.3rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-main);
   margin-bottom: 0;
 }
@@ -117,7 +117,7 @@ const emit = defineEmits(['close', 'confirm']);
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   border: none;
 }
 
@@ -127,23 +127,23 @@ const emit = defineEmits(['close', 'confirm']);
 }
 
 .btn-secondary:hover {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
   color: var(--text-main);
 }
 
 .btn-danger {
-  background-color: color-mix(in srgb, var(--danger) 15%, transparent);
+  background-color: rgba(237, 66, 69, 0);
   color: var(--danger);
   border: 1px solid transparent;
 }
 
 .btn-danger:hover {
   background-color: var(--danger);
-  color: var(--color-white);
+  color: var(--color-black);
 }
 
 .btn:active {
-  transform: scale(0.96);
+  transform: scale(0.85);
 }
 
 .dropdown-icon {
@@ -167,6 +167,6 @@ const emit = defineEmits(['close', 'confirm']);
 }
 .modal-enter-from .modal-content,
 .modal-leave-to .modal-content {
-  transform: scale(0.95);
+  transform: scale(0.85);
 }
 </style>

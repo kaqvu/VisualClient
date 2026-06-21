@@ -153,7 +153,7 @@ const handleMouseOut = (e: MouseEvent) => {
   border-radius: 50%;
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
 }
 
@@ -162,7 +162,7 @@ const handleMouseOut = (e: MouseEvent) => {
 }
 
 .nav-item:hover {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
   color: var(--text-main);
   border-radius: 50%;
 }
@@ -188,7 +188,7 @@ const handleMouseOut = (e: MouseEvent) => {
 }
 
 .nav-item.pseudo-hover {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
   color: var(--text-main);
   border-radius: 50%;
 }
@@ -220,7 +220,7 @@ const handleMouseOut = (e: MouseEvent) => {
   left: 72px;
   background-color: var(--color-black);
   color: var(--color-white);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 13px;
   padding: 6px 12px;
   border-radius: 8px;

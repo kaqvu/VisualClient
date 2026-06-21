@@ -47,12 +47,19 @@ const closeDropdown = (e: MouseEvent) => {
   }
 };
 
-onMounted(() => {
+let unlistenResized: (() => void) | null = null;
+
+onMounted(async () => {
   document.addEventListener('click', closeDropdown);
+  await updateMaximized();
+  unlistenResized = await appWindow.onResized(() => {
+    updateMaximized();
+  });
 });
 
 onUnmounted(() => {
   document.removeEventListener('click', closeDropdown);
+  if (unlistenResized) unlistenResized();
 });
 
 const selectInstance = (id: string) => {
@@ -102,12 +109,19 @@ const handleUpdateCheck = () => {
   checkForUpdates(true);
 };
 
+const isMaximized = ref(false);
+
+const updateMaximized = async () => {
+  isMaximized.value = await appWindow.isMaximized();
+};
+
 const minimize = () => {
   appWindow.minimize();
 };
 
-const toggleMaximize = () => {
-  appWindow.toggleMaximize();
+const toggleMaximize = async () => {
+  await appWindow.toggleMaximize();
+  updateMaximized();
 };
 
 const close = () => {
@@ -179,8 +193,12 @@ const startDrag = (e: MouseEvent) => {
         </svg>
       </div>
       <div class="window-control" @click="toggleMaximize">
-        <svg width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/01/svg">
+        <svg v-if="!isMaximized" width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/01/svg">
           <rect x="2.5" y="2.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <svg v-else width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/01/svg">
+          <path d="M4.5 4.5V2.5C4.5 1.94772 4.94772 1.5 5.5 1.5H9.5C10.0523 1.5 10.5 1.94772 10.5 2.5V6.5C10.5 7.05228 10.0523 7.5 9.5 7.5H7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="1.5" y="4.5" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
         </svg>
       </div>
       <div class="window-control close-control" @click="close">
@@ -290,7 +308,7 @@ const startDrag = (e: MouseEvent) => {
   top: 56px;
   background-color: var(--color-black);
   color: var(--color-white);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 13px;
   padding: 6px 12px;
   border-radius: 8px;
@@ -317,7 +335,7 @@ const startDrag = (e: MouseEvent) => {
   position: relative;
   display: flex;
   align-items: center;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   border-radius: 12px;
   padding: 4px 8px 4px 8px;
   gap: 8px;
@@ -327,7 +345,7 @@ const startDrag = (e: MouseEvent) => {
 }
 
 .active-instance-tile:hover {
-  background-color: var(--surface-2);
+  background-color: color-mix(in srgb, var(--bg-shell) 85%, var(--color-white));
 }
 
 .active-circle {
@@ -347,10 +365,7 @@ const startDrag = (e: MouseEvent) => {
   font-size: 12px;
   color: var(--text-muted);
   font-weight: 600;
-  max-width: 120px;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   cursor: pointer;
 }
 
@@ -373,7 +388,7 @@ const startDrag = (e: MouseEvent) => {
 }
 
 .empty-state:hover {
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
 }
 
 .stop-btn {
@@ -389,7 +404,7 @@ const startDrag = (e: MouseEvent) => {
 }
 
 .stop-btn:active {
-  transform: scale(0.9);
+  transform: scale(0.85);
 }
 
 .dropdown-arrow {
@@ -430,7 +445,7 @@ const startDrag = (e: MouseEvent) => {
 }
 
 .dropdown-item:hover {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
 }
 
 .item-name-wrapper {
@@ -457,7 +472,7 @@ const startDrag = (e: MouseEvent) => {
   border-radius: 50%;
   color: var(--danger);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .stop-btn-small:hover {

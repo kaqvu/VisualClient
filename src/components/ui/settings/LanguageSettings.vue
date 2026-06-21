@@ -58,20 +58,20 @@ import { currentLanguage, setLanguage, t } from '../../../composables/useI18n';
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   padding: 16px 20px;
   border-radius: 12px;
   border: none;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .language-tile:hover {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
 }
 
 .language-tile:active {
-  transform: scale(0.98);
+  transform: scale(0.85);
 }
 
 .tile-left {

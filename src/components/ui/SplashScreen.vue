@@ -99,7 +99,7 @@ onMounted(() => {
 }
 
 @keyframes splash-entrance {
-  0% { opacity: 0; transform: scale(0.9) translateY(10px); }
+  0% { opacity: 0; transform: scale(0.85) translateY(10px); }
   100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 

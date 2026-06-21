@@ -75,7 +75,7 @@ const copyJavaPath = async () => {
 .setting-input {
   width: 100%;
   padding: 12px 16px;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   border: none;
   color: var(--text-main);
   border-radius: 8px;
@@ -86,7 +86,7 @@ const copyJavaPath = async () => {
 
 .path-input {
   flex: 1;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   color: var(--text-muted);
   font-family: monospace;
   pointer-events: none;
@@ -95,20 +95,20 @@ const copyJavaPath = async () => {
 
 .btn-copy {
   padding: 0 20px;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   color: var(--text-main);
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .btn-copy:hover {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
   color: var(--text-main);
 }
 
 .btn-copy:active {
-  transform: scale(0.90);
+  transform: scale(0.85);
 }
 </style>

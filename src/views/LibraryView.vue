@@ -168,7 +168,7 @@ const handleAddAccountClick = () => {
 }
 
 .create-btn {
-  background-color: var(--accent);
+  background-color: var(--success);
   color: var(--color-black);
   border: none;
   padding: 12px 24px;
@@ -184,11 +184,11 @@ const handleAddAccountClick = () => {
 }
 
 .create-btn:hover {
-  background-color: var(--accent-hover);
+  background-color: color-mix(in srgb, var(--success) 85%, var(--color-black));
 }
 
 .create-btn:active {
-  transform: scale(0.94);
+  transform: scale(0.85);
 }
 
 .instances-list {
@@ -212,11 +212,11 @@ const handleAddAccountClick = () => {
 }
 
 .instance-card:hover {
-  background-color: var(--surface-dark);
+  background-color: color-mix(in srgb, var(--bg-shell) 85%, var(--color-black));
 }
 
 .instance-card:active:not(:has(.delete-action:active)):not(:has(.quick-play-overlay:active)) {
-  transform: scale(0.98);
+  transform: scale(0.85);
 }
 
 .instance-info-left {
@@ -247,15 +247,15 @@ const handleAddAccountClick = () => {
   position: absolute;
   width: 32px;
   height: 32px;
-  background-color: var(--accent);
+  background-color: var(--success);
   color: var(--color-black);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transform: scale(0.8);
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: scale(0.85);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
   z-index: 2;
 }
@@ -276,7 +276,7 @@ const handleAddAccountClick = () => {
 }
 
 .quick-play-overlay:hover {
-  background-color: var(--accent-hover);
+  background-color: color-mix(in srgb, var(--success) 85%, var(--color-black));
 }
 
 .quick-play-overlay:active {
@@ -284,9 +284,9 @@ const handleAddAccountClick = () => {
 }
 
 .quick-play-icon {
-  width: 18px;
-  height: 18px;
-  margin-right: 1px;
+  width: 16px;
+  height: 16px;
+  margin-left: 2px;
   pointer-events: none;
 }
 
@@ -307,7 +307,7 @@ const handleAddAccountClick = () => {
 .instance-name {
   margin: 0;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-white);
   white-space: nowrap;
   overflow: hidden;
@@ -365,7 +365,7 @@ const handleAddAccountClick = () => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: var(--backdrop-dark);
+  background-color: color-mix(in srgb, var(--color-black) 40%, transparent);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -438,7 +438,7 @@ const handleAddAccountClick = () => {
 
 .btn-add-account {
   padding: 12px 24px;
-  background-color: var(--accent);
+  background-color: var(--success);
   color: var(--color-black);
   border: none;
   border-radius: 12px;
@@ -451,10 +451,10 @@ const handleAddAccountClick = () => {
 }
 
 .btn-add-account:hover {
-  background-color: var(--accent-hover);
+  background-color: color-mix(in srgb, var(--success) 85%, var(--color-black));
 }
 
 .btn-add-account:active {
-  transform: scale(0.96);
+  transform: scale(0.85);
 }
 </style>

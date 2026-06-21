@@ -9,6 +9,7 @@ import LoaderSelector from '../ui/create-instance/LoaderSelector.vue';
 import VersionSelector from '../ui/create-instance/VersionSelector.vue';
 
 const name = ref('');
+const folderName = ref('');
 const selectedLoader = ref('vanilla');
 const selectedVersion = ref('');
 const selectedVersionUrl = ref('');
@@ -31,13 +32,17 @@ const placeholderName = computed(() => {
   return finalName;
 });
 
+const isNameValid = computed(() => name.value.length === 0 || name.value.length >= 3);
+const isFolderValid = computed(() => folderName.value.length === 0 || folderName.value.length >= 3);
+
 const canCreate = computed(() => {
-  return selectedLoader.value !== '' && selectedVersion.value !== '';
+  return selectedLoader.value !== '' && selectedVersion.value !== '' && isNameValid.value && isFolderValid.value;
 });
 
 
 const handleCreate = () => {
   const instanceName = name.value || placeholderName.value;
+  const finalFolder = folderName.value || placeholderName.value;
   const version = selectedVersion.value;
   const url = selectedVersionUrl.value;
   const loader = selectedLoader.value;
@@ -63,7 +68,8 @@ const handleCreate = () => {
         name: instanceName, 
         loader: loader, 
         version: version,
-        javaVersion
+        javaVersion,
+        folderName: finalFolder
       });
       await fetchInstances();
     } catch (e) {
@@ -94,7 +100,20 @@ const handleCreate = () => {
             v-model="name" 
             :placeholder="placeholderName" 
             class="form-input" 
+            maxlength="16"
           />
+          <span class="error-msg" v-if="name.length > 0 && name.length < 3">{{ t('create_instance.min_length', { count: 3 }) || 'Minimum 3 characters' }}</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">{{ t('create_instance.folder_name') || 'Folder name' }}</label>
+          <input 
+            type="text" 
+            v-model="folderName" 
+            :placeholder="placeholderName" 
+            class="form-input" 
+            maxlength="16"
+          />
+          <span class="error-msg" v-if="folderName.length > 0 && folderName.length < 3">{{ t('create_instance.min_length', { count: 3 }) || 'Minimum 3 characters' }}</span>
         </div>
         <div class="form-group">
           <label class="form-label">{{ t('create_instance.loader') }}</label>
@@ -126,7 +145,7 @@ const handleCreate = () => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: var(--backdrop-dark);
+  background-color: color-mix(in srgb, var(--color-black) 40%, transparent);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -201,17 +220,24 @@ const handleCreate = () => {
   color: var(--text-main);
 }
 
+.error-msg {
+  color: var(--danger);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
 .form-input {
   width: 100%;
   height: 44px;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   border: none;
   border-radius: 12px;
   padding: 0 16px;
   color: var(--text-main);
   font-family: inherit;
   font-size: 1rem;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   outline: none;
 }
 
@@ -220,7 +246,7 @@ const handleCreate = () => {
 }
 
 .form-input:focus {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
   box-shadow: 0 0 0 4px var(--accent);
 }
 
@@ -236,7 +262,7 @@ const handleCreate = () => {
 .modal-btn {
   height: 36px;
   padding: 0 16px;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   border: 4px solid var(--border-line);
   border-radius: 12px;
   display: flex;
@@ -246,17 +272,17 @@ const handleCreate = () => {
   font-weight: 600;
   font-size: 1rem;
   color: var(--text-muted);
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   font-family: inherit;
   outline: none;
 }
 
 .modal-btn:hover:not(:disabled) {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
 }
 
 .modal-btn:active:not(:disabled) {
-  transform: scale(0.92);
+  transform: scale(0.85);
 }
 
 .modal-btn.primary {

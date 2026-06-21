@@ -54,7 +54,7 @@ const selectLoader = (loader: string) => {
 .loader-card {
   height: 36px;
   padding: 0 16px;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   border: 4px solid var(--border-line);
   border-radius: 12px;
   display: flex;
@@ -63,15 +63,15 @@ const selectLoader = (loader: string) => {
   cursor: pointer;
   font-weight: 600;
   color: var(--text-muted);
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .loader-card:active {
-  transform: scale(0.92);
+  transform: scale(0.85);
 }
 
 .loader-card:hover {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
 }
 
 .loader-card.selected {

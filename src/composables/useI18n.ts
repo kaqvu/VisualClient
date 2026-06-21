@@ -7,6 +7,7 @@ const translations: Record<string, any> = { en, pl };
 
 export const currentLanguage = ref('en');
 export const currentTheme = ref('dark');
+export const currentMainColor = ref('#1ad96a');
 export const isLanguageLoaded = ref(false);
 
 export async function initI18n() {
@@ -19,6 +20,10 @@ export async function initI18n() {
       if (settings.theme) {
         currentTheme.value = settings.theme;
         applyThemeClass(settings.theme);
+      }
+      if (settings.main_color) {
+        currentMainColor.value = settings.main_color;
+        applyMainColor(settings.main_color);
       }
     }
   } catch (e) {
@@ -40,12 +45,19 @@ export async function setTheme(theme: string) {
   await saveSettings();
 }
 
+export async function setMainColor(color: string) {
+  currentMainColor.value = color;
+  applyMainColor(color);
+  await saveSettings();
+}
+
 async function saveSettings() {
   try {
     await invoke('save_settings', { 
       settings: { 
         language: currentLanguage.value,
-        theme: currentTheme.value
+        theme: currentTheme.value,
+        main_color: currentMainColor.value
       } 
     });
   } catch (e) {}
@@ -56,6 +68,10 @@ function applyThemeClass(theme: string) {
   if (theme !== 'dark') {
     document.documentElement.classList.add(`${theme}-theme`);
   }
+}
+
+function applyMainColor(color: string) {
+  document.documentElement.style.setProperty('--accent', color);
 }
 
 export function t(key: string, params?: Record<string, string>): string {

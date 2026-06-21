@@ -134,7 +134,7 @@ const translatedTask = computed(() => {
 .progress-bar-bg {
   width: 100%;
   height: 6px;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -182,6 +182,6 @@ const translatedTask = computed(() => {
 .toast-enter-from,
 .toast-leave-to {
   opacity: 0;
-  transform: translateX(20px) scale(0.95);
+  transform: translateX(20px) scale(0.85);
 }
 </style>

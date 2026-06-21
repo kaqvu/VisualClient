@@ -132,7 +132,7 @@ const handleCreateAccount = async (payload: any) => {
 
 .btn-add-account {
   padding: 12px 24px;
-  background-color: var(--accent);
+  background-color: var(--success);
   color: var(--color-black);
   border: none;
   border-radius: 12px;
@@ -146,11 +146,11 @@ const handleCreateAccount = async (payload: any) => {
 }
 
 .btn-add-account:hover {
-  background-color: var(--accent-hover);
+  background-color: color-mix(in srgb, var(--success) 85%, var(--color-black));
 }
 
 .btn-add-account:active {
-  transform: scale(0.96);
+  transform: scale(0.85);
 }
 
 .accounts-list {
@@ -177,11 +177,11 @@ const handleCreateAccount = async (payload: any) => {
 }
 
 .account-card:hover {
-  background-color: var(--surface-dark);
+  background-color: color-mix(in srgb, var(--bg-shell) 85%, var(--color-black));
 }
 
 .account-card:active:not(:has(.delete-action:active)) {
-  transform: scale(0.98);
+  transform: scale(0.85);
 }
 
 .account-info-left {
@@ -205,14 +205,14 @@ const handleCreateAccount = async (payload: any) => {
   font-size: 0.75rem;
   color: var(--text-muted);
   text-transform: uppercase;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.05em;
 }
 
 .account-name {
   margin: 0;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-white);
   white-space: nowrap;
   overflow: hidden;
@@ -280,7 +280,7 @@ const handleCreateAccount = async (payload: any) => {
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
-  background-color: var(--surface-1);
+  background-color: color-mix(in srgb, var(--color-white) 3%, transparent);
 }
 
 .account-card.active .radio-circle {
