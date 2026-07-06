@@ -55,6 +55,7 @@
     "title": "Create new instance",
     "name": "Name",
     "folder_name": "Folder name",
+    "name_exists": "This name already exists",
     "min_length": "Minimum {count} characters",
     "loader": "Loader",
     "version": "Version",

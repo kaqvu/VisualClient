@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { t } from '../../../composables/useI18n';
 import { useInstances, Instance } from '../../../composables/useInstances';
 import IconTrash from '../../icons/IconTrash.vue';
@@ -7,11 +7,22 @@ import IconTrash from '../../icons/IconTrash.vue';
 const props = defineProps<{ instance: Instance }>();
 const emit = defineEmits(['requestDelete']);
 
-const { renameInstance } = useInstances();
+const { instances, renameInstance } = useInstances();
 const instanceNameInput = ref(props.instance.name);
 
+const nameExists = computed(() => {
+  const trimmed = instanceNameInput.value.trim();
+  if (trimmed === props.instance.name) return false;
+  if (trimmed.length === 0) return false;
+  return instances.value.some(inst => inst.name === trimmed || inst.id === trimmed);
+});
+
+const isNameValid = computed(() => instanceNameInput.value.length >= 3);
+
 const handleNameUpdate = () => {
-  renameInstance(props.instance.id, instanceNameInput.value);
+  if (isNameValid.value && !nameExists.value) {
+    renameInstance(props.instance.id, instanceNameInput.value.trim());
+  }
 };
 </script>
 
@@ -26,6 +37,8 @@ const handleNameUpdate = () => {
         @input="handleNameUpdate"
         maxlength="16"
       />
+      <span class="info-msg" v-if="instanceNameInput.length > 0 && instanceNameInput.length < 3">{{ t('create_instance.min_length', { count: 3 }) || 'Minimum 3 characters' }}</span>
+      <span class="info-msg" v-else-if="nameExists">{{ t('create_instance.name_exists') || 'This name already exists' }}</span>
     </div>
 
     <div class="setting-item">
@@ -75,6 +88,13 @@ const handleNameUpdate = () => {
 
 .setting-label {
   color: var(--text-main);
+}
+
+.info-msg {
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-left: 4px;
 }
 
 .setting-input {

@@ -9,7 +9,6 @@ import LoaderSelector from '../ui/create-instance/LoaderSelector.vue';
 import VersionSelector from '../ui/create-instance/VersionSelector.vue';
 
 const name = ref('');
-const folderName = ref('');
 const selectedLoader = ref('vanilla');
 const selectedVersion = ref('');
 const selectedVersionUrl = ref('');
@@ -32,17 +31,21 @@ const placeholderName = computed(() => {
   return finalName;
 });
 
+const nameExists = computed(() => {
+  if (name.value.trim().length === 0) return false;
+  return instances.value.some(inst => inst.id === name.value.trim());
+});
+
 const isNameValid = computed(() => name.value.length === 0 || name.value.length >= 3);
-const isFolderValid = computed(() => folderName.value.length === 0 || folderName.value.length >= 3);
 
 const canCreate = computed(() => {
-  return selectedLoader.value !== '' && selectedVersion.value !== '' && isNameValid.value && isFolderValid.value;
+  return selectedLoader.value !== '' && selectedVersion.value !== '' && isNameValid.value && !nameExists.value;
 });
 
 
 const handleCreate = () => {
   const instanceName = name.value || placeholderName.value;
-  const finalFolder = folderName.value || placeholderName.value;
+  const finalFolder = instanceName;
   const version = selectedVersion.value;
   const url = selectedVersionUrl.value;
   const loader = selectedLoader.value;
@@ -102,18 +105,8 @@ const handleCreate = () => {
             class="form-input" 
             maxlength="16"
           />
-          <span class="error-msg" v-if="name.length > 0 && name.length < 3">{{ t('create_instance.min_length', { count: 3 }) || 'Minimum 3 characters' }}</span>
-        </div>
-        <div class="form-group">
-          <label class="form-label">{{ t('create_instance.folder_name') || 'Folder name' }}</label>
-          <input 
-            type="text" 
-            v-model="folderName" 
-            :placeholder="placeholderName" 
-            class="form-input" 
-            maxlength="16"
-          />
-          <span class="error-msg" v-if="folderName.length > 0 && folderName.length < 3">{{ t('create_instance.min_length', { count: 3 }) || 'Minimum 3 characters' }}</span>
+          <span class="info-msg" v-if="name.length > 0 && name.length < 3">{{ t('create_instance.min_length', { count: 3 }) || 'Minimum 3 characters' }}</span>
+          <span class="info-msg" v-else-if="nameExists">{{ t('create_instance.name_exists') || 'This name already exists' }}</span>
         </div>
         <div class="form-group">
           <label class="form-label">{{ t('create_instance.loader') }}</label>
@@ -222,6 +215,13 @@ const handleCreate = () => {
 
 .error-msg {
   color: var(--danger);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.info-msg {
+  color: var(--accent);
   font-size: 0.85rem;
   font-weight: 500;
   margin-left: 4px;
