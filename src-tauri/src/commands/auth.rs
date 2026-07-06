@@ -20,7 +20,7 @@ pub async fn start_microsoft_login(app: AppHandle) -> Result<MinecraftProfile, S
     let (tx, rx) = tokio::sync::oneshot::channel();
     let tx = std::sync::Arc::new(std::sync::Mutex::new(Some(tx)));
 
-    let login_url = format!("https://login.live.com/oauth20_authorize.srf?client_id={}&response_type=code&redirect_uri=https://login.live.com/oauth20_desktop.srf&scope=XboxLive.signin%20offline_access", CLIENT_ID);
+    let login_url = format!("https://login.live.com/oauth20_authorize.srf?client_id={}&response_type=code&redirect_uri=https://login.live.com/oauth20_desktop.srf&scope=XboxLive.signin%20offline_access&prompt=select_account", CLIENT_ID);
 
     let window_tx = tx.clone();
     let tx_for_poll = window_tx.clone();
@@ -120,6 +120,36 @@ pub async fn login_with_code(code: &str) -> Result<MinecraftProfile, String> {
     };
     let refresh_token = ms_auth["refresh_token"].as_str().unwrap_or("").to_string();
 
+    login_with_ms_token(access_token, refresh_token).await
+}
+
+pub async fn login_with_refresh_token(refresh_token: &str) -> Result<MinecraftProfile, String> {
+    let client = Client::new();
+
+    let res = client.post("https://login.live.com/oauth20_token.srf")
+        .form(&[
+            ("client_id", CLIENT_ID),
+            ("refresh_token", refresh_token),
+            ("grant_type", "refresh_token"),
+            ("redirect_uri", "https://login.live.com/oauth20_desktop.srf"),
+        ])
+        .send().await.map_err(|e| e.to_string())?;
+        
+    let ms_auth: serde_json::Value = res.json().await.map_err(|e| e.to_string())?;
+    let access_token = match ms_auth["access_token"].as_str() {
+        Some(token) => token,
+        None => {
+            return Err(format!("No access token. MS Response: {}", ms_auth.to_string()));
+        }
+    };
+    let new_refresh_token = ms_auth["refresh_token"].as_str().unwrap_or(refresh_token).to_string();
+
+    login_with_ms_token(access_token, new_refresh_token).await
+}
+
+async fn login_with_ms_token(access_token: &str, refresh_token: String) -> Result<MinecraftProfile, String> {
+    let client = Client::new();
+
     // 2. XBL Auth
     let xbl_payload = json!({
         "Properties": {
@@ -179,4 +209,23 @@ pub async fn login_with_code(code: &str) -> Result<MinecraftProfile, String> {
         mc_token: mc_token.to_string(),
         refresh_token,
     })
+}
+
+#[tauri::command]
+pub async fn refresh_account_token(username: String) -> Result<MinecraftProfile, String> {
+    let accounts = crate::commands::accounts::get_accounts().unwrap_or_default();
+    let account = accounts.into_iter().find(|a| a.username == username.clone()).ok_or("Account not found")?;
+    
+    if account.account_type.as_deref() != Some("Microsoft") {
+        return Err("Not a Microsoft account".to_string());
+    }
+    
+    let refresh_token = account.refresh_token.ok_or("No refresh token available")?;
+    
+    let profile = login_with_refresh_token(&refresh_token).await?;
+    
+    // Update local storage
+    crate::commands::accounts::update_account_tokens(&username, profile.mc_token.clone(), profile.refresh_token.clone())?;
+    
+    Ok(profile)
 }

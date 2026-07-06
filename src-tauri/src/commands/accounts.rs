@@ -97,3 +97,14 @@ pub fn delete_account(username: String) -> Result<(), String> {
     crate::core::crypto::write_encrypted_file(&get_accounts_file(), &serde_json::to_string_pretty(&accounts).unwrap())?;
     Ok(())
 }
+
+pub fn update_account_tokens(username: &str, mc_token: String, refresh_token: String) -> Result<(), String> {
+    let mut accounts = get_accounts().unwrap_or_default();
+    if let Some(existing) = accounts.iter_mut().find(|a| a.username == username) {
+        existing.mc_token = Some(mc_token);
+        existing.refresh_token = Some(refresh_token);
+        let file = get_accounts_file();
+        crate::core::crypto::write_encrypted_file(&file, &serde_json::to_string_pretty(&accounts).unwrap())?;
+    }
+    Ok(())
+}

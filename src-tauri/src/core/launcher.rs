@@ -467,7 +467,7 @@ pub async fn launch_instance(
     cmd.arg(&launch_info.main_class);
 
     let accounts = crate::commands::accounts::get_accounts().unwrap_or_default();
-    let account = accounts.into_iter().find(|a| a.username == username).unwrap_or_else(|| {
+    let mut account = accounts.into_iter().find(|a| a.username == username).unwrap_or_else(|| {
         crate::commands::accounts::Account {
             username: username.clone(),
             active: true,
@@ -477,6 +477,18 @@ pub async fn launch_instance(
             refresh_token: None,
         }
     });
+
+    if account.account_type.as_deref() == Some("Microsoft") {
+        if account.refresh_token.is_some() {
+            if let Ok(profile) = crate::commands::auth::refresh_account_token(username.clone()).await {
+                account.mc_token = Some(profile.mc_token);
+            } else {
+                return Err("Failed to refresh Microsoft token. Please log in again.".to_string());
+            }
+        } else {
+            return Err("No refresh token available. Please log in again.".to_string());
+        }
+    }
 
     let uuid_str = account.uuid.unwrap_or_else(|| "00000000-0000-0000-0000-000000000000".to_string());
     let token_str = account.mc_token.unwrap_or_else(|| "0".to_string());

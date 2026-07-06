@@ -29,6 +29,7 @@ pub fn run() {
             commands::accounts::delete_account,
             commands::auth::start_microsoft_login,
             commands::auth::cancel_microsoft_login,
+            commands::auth::refresh_account_token,
             commands::instances::get_instance_servers,
             commands::instances::add_instance_server,
             commands::instances::update_instance_server,
