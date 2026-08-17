@@ -41,7 +41,7 @@ Before you begin, ensure you have met the following requirements:
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/kaqvu/VisualClient.git
+git clone https://github.com/kacpixcrf/VisualClient.git
 cd VisualClient
 ```
 
@@ -96,4 +96,4 @@ VisualClient/
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
-*Developed with ❤️ by [kaqvu](https://github.com/kaqvu)*
+*Developed with ❤️ by [kacpixcrf](https://github.com/kacpixcrf)*

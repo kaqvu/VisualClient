@@ -1,8 +1,8 @@
 {
   "name": "visualclient",
   "private": true,
-  "version": "26.2.6",
-  "author": "kaqvu",
+  "version": "26.2.7",
+  "author": "kacpixcrf",
   "type": "module",
   "scripts": {
     "dev": "vite",

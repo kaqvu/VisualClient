@@ -142,7 +142,7 @@ const startDrag = (e: MouseEvent) => {
       <img src="/icon.svg" onerror="this.src='/vite.svg'" alt="" class="app-icon" />
       <span class="app-title">visual <span class="text-accent">client</span></span>
       <div class="title-separator"></div>
-      <span class="app-author">by kaqvu</span>
+      <span class="app-author">by kacpixcrf</span>
     </div>
     
     <div class="titlebar-controls">

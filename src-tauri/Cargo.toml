@@ -1,8 +1,8 @@
 [package]
 name = "visualclient"
-version = "26.2.6"
+version = "26.2.7"
 description = "A visual client for Minecraft"
-authors = ["kaqvu"]
+authors = ["kacpixcrf"]
 edition = "2024"
 
 [lib]
